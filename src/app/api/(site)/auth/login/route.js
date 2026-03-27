@@ -9,13 +9,12 @@ export async function POST(req) {
     
     const { email, password, rememberMe } = await req.json()
     const user = await User.findOne({ email });
-    console.log(user)
+    
     if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: "404"})
+      return NextResponse.json({ message: "User not found" }, { status: 404 })
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch, password, user.password)
 
     if (!user || !isMatch) {
       return NextResponse.json(

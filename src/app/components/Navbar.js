@@ -18,9 +18,11 @@ import { useUsers } from "@src/hooks/useUsers";
 import { useUser } from "@src/hooks/useUser";
 import { IconDashboard } from "@tabler/icons-react";
 import { Separator } from "@src/components/ui/separator";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
 	const { user } = useUser()
+	const pathname = usePathname() 
 	const [bag, setBag] = useState(user?.bagBooks || []);
 	const [favs, setFavs] = useState(user?.favoriteBooks || [])
 		
@@ -52,17 +54,33 @@ const Navbar = () => {
 						</div>
 					</Link>
 					<div className="flex items-center font-light gap-12 text-2xl">
-						<Link href="/autori" className="uppercase">
+						<Link 
+							href="/autori" 
+							disabled={pathname.includes("/autori")}
+							className="uppercase"
+						>
 							Autori
 						</Link>
-						<Link href="/carti" className="uppercase">
+						<Link 
+							href="/carti" 
+							disabled={pathname.includes("/carti")}
+							className="uppercase"
+						>
 							Carti
 						</Link>
-						<Link href="/despre-noi" className="uppercase">
+						<Link 
+							href="/despre-noi" 
+							disabled={pathname.includes("/despre-noi")}
+							className="uppercase"
+						>
 							Despre Noi
 						</Link>
 						{user?.role !== "author" && (
-							<Link href="/publica-cu-noi" className="uppercase">
+							<Link 
+								href="/publica-cu-noi" 
+								disabled={pathname.includes("/autori")}
+								className="uppercase"
+							>
 								Publica
 							</Link>
 						)}
@@ -134,7 +152,10 @@ const Navbar = () => {
 										</div>
 										<hr className="w-full border-1 border-gray-200" />
 										<div className="mt-2">
-											<Link href="/profil#favorite">
+											<Link 
+												href="/profil#favorite"
+												disabled={pathname.includes("/profil")}
+											>
 												<span className="text-cneter w-full px-2 py-1 border border-[var(--color-primary)] rounded-sm">Vezi toate favoritele</span>
 											</Link>
 										</div>
@@ -145,10 +166,16 @@ const Navbar = () => {
 							</PopoverContent>
 						</Popover>
 					</div>
-					<Link href="/profil">
+					<Link 
+						href="/profil"
+						disabled={pathname.includes("/profil")}
+					>
 						<FaRegUser size={32} className="cursor-pointer" title="Profil" />
 					</Link>
-					<Link href="/cos">
+					<Link 
+						href="/cos"
+						disabled={pathname.includes("/cos")}
+					>
 						<div className="relative cursor-pointer">
 							{bag?.length ? (
 								<Badge

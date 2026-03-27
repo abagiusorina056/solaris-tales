@@ -54,6 +54,7 @@ import { useUser } from "@src/hooks/useUser";
 import { IconHeartX, IconRotate, IconStar, IconTruckDelivery } from "@tabler/icons-react";
 import { Separator } from "@src/components/ui/separator";
 import Link from "next/link";
+import ProfileSkeleton from "@src/components/skeletons/site/ProfileSkeleton";
 
 const UserView = () => {
   const { user } = useUser()
@@ -75,7 +76,6 @@ const UserView = () => {
     });
   };
 
-  console.log(userState)
   const handleLogout = () => {
     setIsDisabled(true);
     logout()
@@ -114,7 +114,9 @@ const UserView = () => {
   const chunkedFavs = chunkArray(searchedMyFavs, 2);
   const chunkedBooks = chunkArray(searchedMyBooks, 2);
 
-  return (
+  return !user._id && !userState._id ? (
+    <ProfileSkeleton />
+  ) : (
     <div className="w-full">
       <PageTitle title="Contul meu">
         <Dialog>
@@ -148,37 +150,39 @@ const UserView = () => {
       <div className="w-full px-16 mt-4">
         <UserCard user={userState} />
       </div>
-      <hr className="w-full my-6 border border-[var(--color-primary)]/60" />
+      
+      <Separator className="my-8" />
+
       <div className="px-16">
         <h1 className="uppercase text-3xl font-extrabold text-[var(--color-primary)]">
           Istoric comenzi
         </h1>
         {user?.allOrders.length > 0 ? (
-        <Table className="mb-4">
-          <TableHeader>
-            <TableRow className="text-xl font-medium">
-              <TableHead>#</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Modalitate de plata</TableHead>
-              <TableHead className="text-right">Total</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-              {user.allOrders.map((order) => (
-                <TableRow 
-                  key={order.slug}
-                  className="hover:bg-gray-200 cursor-pointer"
-                  onClick={() => router.push(`/comanda/${order._id}`)}
-                >
-                  <TableCell className="font-medium">{order.slug}</TableCell>
-                  <TableCell>{orderStatusMap[order.status]}</TableCell>
-                  <TableCell className="capitalize">{order.paymentMethod}</TableCell>
-                  <TableCell className="text-right">{order.price} RON</TableCell>
-                </TableRow>
-              ))
-            }
-          </TableBody>
-        </Table>
+          <Table className="mb-4">
+            <TableHeader>
+              <TableRow className="text-xl font-medium">
+                <TableHead>#</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Modalitate de plata</TableHead>
+                <TableHead className="text-right">Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+                {user.allOrders.map((order) => (
+                  <TableRow 
+                    key={order.slug}
+                    className="hover:bg-gray-200 cursor-pointer"
+                    onClick={() => router.push(`/comanda/${order._id}`)}
+                  >
+                    <TableCell className="font-medium">{order.slug}</TableCell>
+                    <TableCell>{orderStatusMap[order.status]}</TableCell>
+                    <TableCell className="capitalize">{order.paymentMethod}</TableCell>
+                    <TableCell className="text-right">{order.price} RON</TableCell>
+                  </TableRow>
+                ))
+              }
+            </TableBody>
+          </Table>
         ) : (
           <div className="flex flex-col items-center justify-center py-16 gap-8">
             <IconTruckDelivery size={150} />
@@ -189,7 +193,8 @@ const UserView = () => {
           </div>
         )}
       </div>
-      <hr className="w-full my-6 border border-[var(--color-primary)]/60" />
+
+      <Separator className="my-8" />
 
       <div className="px-16" id="favorite">
         <div className="flex items-end justify-between">
@@ -237,51 +242,54 @@ const UserView = () => {
           </Carousel>
         )}
       </div>
-      <hr className="w-full my-6 border border-[var(--color-primary)]/60" />
+
 
       {user?.role === "author" && (
-        <div className="px-16">
-          <div className="flex items-end justify-between">
-            <h1 className="uppercase text-3xl font-extrabold text-[var(--color-primary)]">
-              Cartile mele
-            </h1>
-            <div className="flex items-center bg-white px-3 rounded-l-sm text-xl">
-              <FaSearch size={24} className="text-[var(--color-primary)]" />
-              <Input
-                placeholder="Cauta..."
-                type="text"
-                name="search"
-                id="search"
-                value={myBooksSearchTerm}
-                onChange={(e) => setMyBooksSearchTerm(e.target.value)}
-                autoComplete="off"
-                className="w-full shadow-none !text-xl border-0 ring-0 outline-0 bg-transparent placeholder:text-[var(--color-primary)] placeholder:select-none"
-              />
+        <>
+          <Separator className="my-8" />
+          <div className="px-16">
+            <div className="flex items-end justify-between">
+              <h1 className="uppercase text-3xl font-extrabold text-[var(--color-primary)]">
+                Cartile mele
+              </h1>
+              <div className="flex items-center bg-white px-3 rounded-l-sm text-xl">
+                <FaSearch size={24} className="text-[var(--color-primary)]" />
+                <Input
+                  placeholder="Cauta..."
+                  type="text"
+                  name="search"
+                  id="search"
+                  value={myBooksSearchTerm}
+                  onChange={(e) => setMyBooksSearchTerm(e.target.value)}
+                  autoComplete="off"
+                  className="w-full shadow-none !text-xl border-0 ring-0 outline-0 bg-transparent placeholder:text-[var(--color-primary)] placeholder:select-none"
+                />
+              </div>
             </div>
+            {!user?.authoredBooks?.length ? (
+              <span>Nu ai carti publicate</span>
+            ) : (
+              <Carousel>
+                <CarouselContent className="pb-10 px-4">
+                  {chunkedBooks.length ? (
+                    chunkedBooks.map((pair, i) => (
+                      <CarouselItem key={i} className="grid grid-cols-2 gap-4 md:gap-16">
+                        {pair.map((book) => (
+                          <LayoutThree key={book._id} book={book} />
+                        ))}
+                      </CarouselItem>
+                    ))
+                  ) : (
+                    <p>Niciun rezultat</p>
+                  )}
+                </CarouselContent>
+                
+                <CarouselPrevious className="-left-5 bg-[var(--color-primary)] text-white" />
+                <CarouselNext className="-right-5 bg-[var(--color-primary)] text-white" />
+              </Carousel>
+            )}
           </div>
-          {!user?.authoredBooks?.length ? (
-            <span>Nu ai carti publicate</span>
-          ) : (
-            <Carousel>
-              <CarouselContent className="pb-10 px-4">
-                {chunkedBooks.length ? (
-                  chunkedBooks.map((pair, i) => (
-                    <CarouselItem key={i} className="grid grid-cols-2 gap-4 md:gap-16">
-                      {pair.map((book) => (
-                        <LayoutThree key={book._id} book={book} />
-                      ))}
-                    </CarouselItem>
-                  ))
-                ) : (
-                  <p>Niciun rezultat</p>
-                )}
-              </CarouselContent>
-              
-              <CarouselPrevious className="-left-5 bg-[var(--color-primary)] text-white" />
-              <CarouselNext className="-right-5 bg-[var(--color-primary)] text-white" />
-            </Carousel>
-          )}
-        </div>
+        </>
       )}
     </div>
   );

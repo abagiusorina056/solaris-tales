@@ -12,6 +12,7 @@ import Image from 'next/image'
 import React from 'react'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+import OrderSkeleton from '@src/components/skeletons/OrderSkeleton'
 
 const OrderView = ({ id }) => {
   const { user } = useUser()
@@ -19,7 +20,12 @@ const OrderView = ({ id }) => {
   const [isCancelling, setIsCancelling] = React.useState(false)
   const { orders: order } = useOrders({}, `/api/order/${id}?user=${user._id}`)
   
-  return (
+  return !order._id ? (
+    <>
+      <PageTitle title={"Comanda"} />
+      <OrderSkeleton isDashboard={false} />
+    </>
+  ) : (
     <>
       <PageTitle title={"Comanda"} />
       <div className='w-full pt-16'>

@@ -190,7 +190,7 @@ export const uploadImage = async (img) => {
   const formData = new FormData();
   formData.append("file", img);
 
-  const res = await fetch("/api/image/upload", {
+  const res = await fetch("/api/admin/image/upload", {
     method: "POST",
     body: formData,
   });

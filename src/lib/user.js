@@ -79,7 +79,7 @@ export const bagItem = async (bookId, userId, action) => {
 }
 
 export const publishRequest = async (data, userId) => {
-  // upload pdf / image first
+  // upload pdf first
   const uploadedUrl = await uploadPdf(data.bookFragments);
 
   const form = new FormData();

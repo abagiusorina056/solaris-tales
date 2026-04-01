@@ -19,6 +19,7 @@ import Link from 'next/link'
 import defaultAuthorPic from '@public/default-profile-pic.png'
 import BookSkeleton from '@src/components/skeletons/site/BookSkeleton'
 import { Separator } from '@src/components/ui/separator'
+import { genres } from '@src/lib/genres'
 
 const BookView = ({ id }) => {
   const { data: user } = useUser()
@@ -120,6 +121,7 @@ const BookView = ({ id }) => {
 }
 
 const BookCard = ({ book, favorites, userId, authorId, review }) => {
+  const bookGenre = genres.genres.find(g => g.slug === book?.genre)
   const [isFavorite, setIsFavorite] = useState(favorites.includes(book._id))
   const addedRef = useRef(null);
 
@@ -179,8 +181,12 @@ const BookCard = ({ book, favorites, userId, authorId, review }) => {
             />
           </div>
 
-          <div className='text-[var(--color-primary)] font-bold text-2xl'>
-            Publicata pe {format(new Date(book.releaseDate), "P", { locale: ro })}
+          <div className='flex items-center gap-4'>
+            <div className='text-[var(--color-primary)] font-light text-2xl'>
+              Publicata pe {format(new Date(book.releaseDate), "P", { locale: ro })}
+            </div>
+            <span className="text-2xl">•</span>
+            <span className='font-light text-2xl'>{bookGenre?.label}</span>
           </div>
           <p className='text-2xl font-bold mb-12'>
             {book.description}

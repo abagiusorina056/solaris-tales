@@ -252,6 +252,7 @@ export function DataTable({
         <div className="flex items-center ">
           <Input
             placeholder="Caută..."
+            disabled={tableData.length === 0}
             value={search ?? ""}
             onChange={e => setSearch(e.target.value)}
             className="w-64"

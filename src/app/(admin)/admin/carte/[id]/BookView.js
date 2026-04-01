@@ -24,6 +24,7 @@ import { toast } from 'sonner'
 import { deleteBook, updateBook } from '@src/lib/admin'
 import { socket } from '@src/lib/socketClient'
 import BookSkeleton from '@src/components/skeletons/admin/BookSkeleton'
+import { genres } from '@src/lib/genres';
 
 const BookView = ({ id }) => {
   const { 
@@ -67,6 +68,7 @@ const BookView = ({ id }) => {
 }
 
 const BookCard = ({ book }) => {
+  const bookGenre = genres.genres.find(g => g.slug === book?.genre)
   const defaultValues = {
     title: book?.title,
     price: book?.price,
@@ -141,8 +143,12 @@ const BookCard = ({ book }) => {
           className='w-68 h-102 drop-shadow-2xl'
         />
         <div className='flex flex-col'>
-          <div className='font-light text-2xl'>
-            Publicata pe {book?.releaseDate ? format(new Date(book.releaseDate), "P", { locale: ro }) : "..."}
+          <div className='flex items-center gap-4'>
+            <div className='font-light text-2xl'>
+              Publicata pe {book?.releaseDate ? format(new Date(book.releaseDate), "P", { locale: ro }) : "..."}
+            </div>
+            <span className="text-2xl">•</span>
+            <span className='font-light text-2xl'>{bookGenre?.label}</span>
           </div>
           <p className='text-2xl font-bold mb-12'>
             {book?.description}

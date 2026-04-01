@@ -34,6 +34,7 @@ export function adaptBooks(books = [], isAuthorActive) {
     authorId: b.authorId,
     price: b.price,
     rating: b.starReviews?.length ?? 0,
+    genre: b.genre,
     releaseDate: b.releaseDate,
     createdAt: b.createdAt,
     isAuthorActive: isAuthorActive

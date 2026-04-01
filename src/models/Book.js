@@ -22,6 +22,10 @@ const BookSchema = new Schema(
     image: {
       type: String,
     },
+    genre: {
+      type: String,
+      required: true
+    },
     bookFragments: {
       type: String,
     },

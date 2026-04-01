@@ -13,15 +13,20 @@ const DataTableSkeleton = ({ table, flexRender, columnsLength }) => {
   return (
     <Table>
       <TableHeader>
-        {table.getHeaderGroups().map(hg => (
-          <TableRow key={hg.id}>
-            {hg.headers.map(h => (
-              <TableHead key={h.id}>
-                {flexRender(h.column.columnDef.header, h.getContext())}
-              </TableHead>
-            ))}
+        {table ? (
+          table.getHeaderGroups().map(hg => (
+            <TableRow key={hg.id}>
+              {hg.headers.map(h => (
+                <TableHead key={h.id}>
+                  {flexRender(h.column.columnDef.header, h.getContext())}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
           </TableRow>
-        ))}
+        )}
       </TableHeader>
 
       <TableBody>

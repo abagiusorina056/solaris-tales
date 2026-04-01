@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { uploadImage } from "./utils";
 
 // constants
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -94,6 +95,28 @@ export const createAuthor = async (authorData) => {
 }
 
 // book
+export const addBook = async (bookData, author) => {
+  const uploadedUrl = await uploadImage(bookData.image);
+
+  const res = await fetch(`/api/admin/add/book`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...bookData,
+      image: uploadedUrl,
+      author: author?.name,
+      authorId: author?._id
+    }),
+  });
+
+  const data = await res.json();
+  if (data.error) {
+    toast.error(data.error)
+  }
+
+  toast.success("Carte adaugata cu success")
+}
+
 export const deleteBook = async (id) => {
   const res = await fetch(`/api/admin/delete/book/${id}`, {
     method: "DELETE",

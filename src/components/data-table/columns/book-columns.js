@@ -6,8 +6,8 @@ import { IconTrash, IconEye, IconCircleDashed } from "@tabler/icons-react"
 import Image from "next/image"
 import { format } from "date-fns"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
-import { ro } from "date-fns/locale"
 import { deleteBook } from "@src/lib/admin"
+import { genres } from "@src/lib/genres"
 
 export function bookColumns (handleDelete) {
   return [
@@ -59,6 +59,17 @@ export function bookColumns (handleDelete) {
           {format(row.original.releaseDate, "dd.MM.yyyy")}
         </span>
       ),
+    },
+    {
+      accessorKey: "genre",
+      header: "Gen",
+      cell: ({ row }) => {
+        const genre = genres.genres.find(g => g.slug === row.original.genre)
+
+        return (
+          <span>{genre.label}</span>
+        )
+      },
     },
     {
       accessorKey: "createdAt",

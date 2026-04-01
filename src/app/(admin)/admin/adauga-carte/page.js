@@ -28,18 +28,29 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@src/components/ui/dialog"
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@src/components/ui/command"
 import { Button } from '@src/components/ui/button'
 import { FaRegCalendar } from "react-icons/fa6";
 import ImageDropzone from '@src/app/components/ImageDropzone';
 import { useRouter } from 'next/navigation'
 import { validateAddBookForm, validateCreateAuthorForm } from '@src/lib/utils';
-import { addBook } from '@src/lib/book';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { IconPlus } from '@tabler/icons-react';
 import { useAuthors } from '@src/hooks/useAuthors';
 import Image from 'next/image';
-import { createClassicAuthor } from '@src/lib/admin';
+import { addBook, createClassicAuthor } from '@src/lib/admin';
 import { socket } from '@src/lib/socketClient';
+import { genres } from '@src/lib/genres';
 
 const AddBookView = ({ }) => {
   const {
@@ -61,7 +72,8 @@ const AddBookView = ({ }) => {
     image: "",
     price: "",
     releaseDate: "",
-    authorId: ""
+    authorId: "",
+    genre: ""
   }
   const defaultAuthorValues = {
     name: "",
@@ -75,6 +87,7 @@ const AddBookView = ({ }) => {
   const [selectedAuthor, setSelectedAuthor] = useState(null)
   const [disabled, setDisabled] = useState(false)
   const [addDisabled, setAddDisabled] = useState(false)
+  const [open, setOpen] = useState(false)
   const router = useRouter()
 
   const handleChange = (e) => {
@@ -123,15 +136,21 @@ const AddBookView = ({ }) => {
       return
     }
 
+    const targetGenre = genres.genres.find(g => g.label === formData.genre)
+
     addBook({
       title: formData.title,
       description: formData.description,
       image: formData.image,
       bookFragments: formData.bookFragments,
-      price: formData.price.toFixed(2).toString(),
-      releaseDate: formData.releaseDate
-    }, author)
-    .then(() => setAddDisabled(false))
+      price: parseFloat(formData.price).toFixed(2).toString(),
+      releaseDate: formData.releaseDate,
+      genre: targetGenre.slug
+    }, selectedAuthor)
+    .then(() => {
+      setAddDisabled(false)
+      router.push("/admin/carti")
+    })
   }
 
   useEffect(() => {
@@ -271,7 +290,6 @@ const AddBookView = ({ }) => {
                         isNewProfilePic
                         hideConfirmButton
                         onFileSelect={(f) => setFile(f)}
-                        // setProfilImage={handleChangeProfilePic}
                       />
                       <div className="!text-2xl">
                         <Label className="flex items-center gap-1 !text-2xl">
@@ -383,7 +401,7 @@ const AddBookView = ({ }) => {
           </div>
 
           <div className='flex items-center w-full mb-4 gap-3'>
-            <div className='flex-1/2'>
+            <div className='flex-1/3'>
               <Label
                 htmlFor="releaseDate"
                 className="font-semibold text-xl"
@@ -414,7 +432,51 @@ const AddBookView = ({ }) => {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="flex-1/2">
+            <div className="flex-1/3">
+              <Label
+                htmlFor="price"
+                className="font-semibold text-xl"
+              >
+                Gen
+              </Label>
+              <Input
+                variant="default"
+                type="text"
+                id="genre"
+                name="genre"
+                onClick={() => setOpen(true)}
+                value={formData.genre}
+                onChange={() => {}}
+                className="bg-white py-6 !text-xl"
+              />
+            </div>
+            <CommandDialog open={open} onOpenChange={setOpen}>
+              <Command>
+                <CommandInput placeholder="Cauta un gen literar..." />
+                <CommandList>
+                  <CommandEmpty>Niciun gen gasit</CommandEmpty>
+                  <CommandGroup >
+                    {genres.genres.map((g, i) => (
+                      <CommandItem 
+                        key={g.id}
+                        className={"px-0! py-0!"}
+                        >
+                        <span 
+                          className='w-full px-2 py-1.5'
+                          onClick={() => {
+                            handleChange(
+                              { target: { name: "genre", value: g.label } }
+                            )
+                            setOpen(false)
+                          }}
+                        >{g.label}</span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </CommandDialog>
+            <div className="flex-1/3">
               <Label
                 htmlFor="price"
                 className="font-semibold text-xl"

@@ -33,7 +33,7 @@ const OrderSchema = new Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["cash", "card", "transfer"],
+      enum: ["cash", "card"],
       required: true
     },
     products: [

@@ -29,6 +29,7 @@ import {
   useSidebar,
 } from "@src/components/ui/sidebar"
 import sorina from "@public/mockup-staff/sorina.png"
+import Link from "next/link"
 
 export function NavUser({
   user
@@ -83,17 +84,13 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <IconUserCircle />
-                Cont
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notificari
+                <Link href="/admin/profil">Profil</Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <IconLogout />
-              Log out
+              <Link href="/admin/profil">Log out</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

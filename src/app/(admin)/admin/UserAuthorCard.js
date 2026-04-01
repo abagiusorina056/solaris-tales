@@ -266,18 +266,6 @@ const UserAuthorCard = ({ user, slug }) => {
               <div className="flex items-center gap-1">
                 <IconBlockquote size={24} />
                 <span>Bio</span>
-                <Button 
-                  variant={"ghost"} 
-                  size="icon"
-                  disabled={!user?.bio}
-                  className="ml-auto"
-                  onClick={() => setFormValues(prev => ({
-                    ...prev,
-                    bio: "",
-                  }))}
-                >
-                  <IconX size={20} />
-                </Button>
               </div>
               <Textarea
                 placeholder=""
@@ -310,7 +298,7 @@ const UserAuthorCard = ({ user, slug }) => {
                     type="text"
                     name="instagram"
                     id="instagram-preview"
-                    value={user?.instagram ? "@" + user?.instagram : "-"}
+                    value={user?.instagram || ""}
                     readOnly
                     className="w-full !text-2xl"
                   />
@@ -329,7 +317,7 @@ const UserAuthorCard = ({ user, slug }) => {
                     type="text"
                     name="facebook"
                     id="facebook-preview"
-                    value={user?.facebook || "-"}
+                    value={user?.facebook || ""}
                     readOnly
                     className="w-full !text-2xl"
                   />
@@ -345,12 +333,24 @@ const UserAuthorCard = ({ user, slug }) => {
                   <div className="flex items-center gap-1 !text-2xl">
                     <IconBlockquote size={24} />
                     <span>Bio</span>
+                    <Button 
+                      variant={"ghost"} 
+                      size="icon"
+                      disabled={!user?.bio}
+                      className="ml-auto"
+                      onClick={() => setFormValues(prev => ({
+                        ...prev,
+                        bio: "",
+                      }))}
+                    >
+                      <IconX size={20} />
+                    </Button>
                   </div>
                   <Textarea
                     placeholder=""
                     name="bio"
                     id="bio-preview"
-                    value={user?.bio || user?.description}
+                    value={user?.bio || user?.description || ""}
                     onChange={handleChange}
                     className="w-full h-34! !text-xl"
                   />

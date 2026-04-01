@@ -17,10 +17,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { updateOrder, validateUpdateOrderForm } from '@src/lib/admin'
 import { socket } from '@src/lib/socketClient'
 import OrderSkeleton from '@src/components/skeletons/OrderSkeleton'
+import { toast } from 'sonner'
 
 const OrderView = ({ id }) => {
   const { orders: order } = useOrders({}, `/api/admin/orders/${id}`)
-
+  
   const defaultValues = {
     email: order.email || "",
     phone: order.phone || "",
@@ -32,6 +33,7 @@ const OrderView = ({ id }) => {
   const [updateForm, setUpdateForm] = React.useState(defaultValues)
   const [updateDialog, setUpdateDialog] = React.useState(false)
   const [isUpdating, setIsUpdating] = React.useState(false)
+  const [isStatusUpdating, setIsStatusUpdating] = React.useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -40,6 +42,16 @@ const OrderView = ({ id }) => {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleStatusUpdate = async (e) => {
+    setIsStatusUpdating(true)
+
+    updateOrder(order._id, { status: e })
+      .then(() => {
+        toast.success("Status actualizat cu succes")
+        setIsStatusUpdating(false)
+      })
   }
 
   const handleUpdate = async () => {
@@ -67,7 +79,7 @@ const OrderView = ({ id }) => {
 
     if (order && order._id) {
       setOrderData(order);
-      
+
       setUpdateForm({
         email: order.email || "",
         phone: order.phone || "",
@@ -76,38 +88,61 @@ const OrderView = ({ id }) => {
       });
     }
   }, [order])
-
   
   return !order._id && !orderData._id ? (
     <OrderSkeleton />
   ) : (
     <div className='w-full pt-16'>
       <div className='w-full px-16'>
-        <div className='flex items-center text-4xl gap-3 mb-4'>
-          <h1>Comanda</h1>
-          <div className="flex gap-1 items-center">
-            <span className="bg-gray-200 text-gray-500 text-3xl w-fit rounded-sm px-2 py-1">
-              {order.slug}
-            </span>
-            {copied ? (
-              <IconCheck  
-                size={24}
-                className="text-gray-400"
-              />
-            ) : (
-              <IconClipboard 
-                size={24} 
-                cursor="pointer"
-                className=" text-gray-400"
-                onClick={() => 
-                  navigator.clipboard.writeText(order.slug)
-                  .then(() => {
-                    setCopied(true)
-                    setTimeout(() => setCopied(false), 5000)
-                  })
-                }
-              />
+        <div className='flex items-center text-4xl mb-4 justify-between'>
+          <span className='flex items-center gap-4'>
+            <h1>Comanda</h1>
+            <div className="flex gap-1 items-center">
+              <span className="bg-gray-200 text-gray-500 text-3xl w-fit rounded-sm px-2 py-1">
+                {order.slug}
+              </span>
+              {copied ? (
+                <IconCheck  
+                  size={24}
+                  className="text-gray-400"
+                />
+              ) : (
+                <IconClipboard 
+                  size={24} 
+                  cursor="pointer"
+                  className=" text-gray-400"
+                  onClick={() => 
+                    navigator.clipboard.writeText(order.slug)
+                    .then(() => {
+                      setCopied(true)
+                      setTimeout(() => setCopied(false), 5000)
+                    })
+                  }
+                />
+              )}
+            </div>
+          </span>
+
+          <div className='flex items-center gap-4'>
+            {isStatusUpdating && (
+              <IconLoader2 size={28} className='rotate' />
             )}
+            <h1 className='text-2xl'>Status:</h1>
+            <Select 
+              disabled={orderData?.status === "canceled" || isStatusUpdating} 
+              onValueChange={(e) => handleStatusUpdate(e)}
+            >
+              <SelectTrigger className="w-max">
+                <SelectValue placeholder={orderStatusMap[orderData.status]} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {Object.entries(orderStatusMap).map(([key, value]) => (
+                    <SelectItem key={key} value={key}>{value}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className='flex gap-16 w-full flex-nowrap overflow-x-auto scrollbar-hide pb-6'>
@@ -219,21 +254,6 @@ const OrderView = ({ id }) => {
                       <DialogTitle>Editeaza Comanda {order.slug}</DialogTitle>
                     </DialogHeader>
                     <DialogDescription className={"flex flex-col gap-4"}>
-                      <span className='!text-2xl flex-1/2'>
-                        <span>Status</span>
-                        <Select>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder={orderStatusMap[orderData.status]} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {Object.entries(orderStatusMap).map(([key, value]) => (
-                                <SelectItem key={key} value={key}>{value}</SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </span>
                       <span className='!text-2xl flex-1/2'>
                         <span>Email</span>
                         <Input

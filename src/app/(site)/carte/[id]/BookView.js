@@ -21,7 +21,7 @@ import BookSkeleton from '@src/components/skeletons/site/BookSkeleton'
 import { Separator } from '@src/components/ui/separator'
 
 const BookView = ({ id }) => {
-  const { user } = useUser()
+  const { data: user } = useUser()
   const { books: book } = useBooks({}, `/api/books/${id}`)
   const [allReviews, setAllReviews] = useState([])
   const [authorRating, setAuthorRating] = useState("")

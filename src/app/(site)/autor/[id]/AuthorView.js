@@ -36,7 +36,7 @@ const AuthorView = ({ id }) => {
     loading,
     reload
   } = useAuthors({}, `/api/authors/${id}`)
-  const { user } = useUser()
+  const { data: user } = useUser()
 
   const ref = useRef(null)
   const totalPages = Math.ceil(totalBooks / ITEMS_PER_PAGE);
@@ -180,6 +180,7 @@ const AuthorCard = ({ author }) => {
         <h1 className='text-5xl text-[var(--color-primary)]'>{author.name}</h1>
         <IconAlertTriangle 
           size={36} 
+          disabled
           className='opacity-50'
           cursor={"pointer"} 
           title='Raporteaza'

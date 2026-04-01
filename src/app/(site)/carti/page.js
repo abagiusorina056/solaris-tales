@@ -37,12 +37,15 @@ import { useUser } from "@src/hooks/useUser";
 import { useBooks } from "@src/hooks/useBooks";
 import { IconLoader2, IconStar } from "@tabler/icons-react";
 import BooksSkeleton from "@src/components/skeletons/site/BooksSkeleton";
+import { useSearchParams } from "next/navigation";
 
 const ITEMS_PER_PAGE = 8;
 const PAGE_WINDOW = 3;
 
 const BooksView = () => {
-  const { user } = useUser()
+  const { data: user, invalidateUser } = useUser()
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("term");
   const { 
     books: books,
     page,
@@ -53,7 +56,7 @@ const BooksView = () => {
     pageSize,
     loading,
     reload
-  } = useBooks({},  "/api/books")
+  } = useBooks({},  "/api/books", searchTerm || "")
   const ref = useRef(null)
   const totalPages = Math.ceil(totalBooks / ITEMS_PER_PAGE);
   

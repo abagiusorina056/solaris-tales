@@ -6,11 +6,10 @@ import { cn, excludedRoutes } from '@src/lib/utils';
 import Footer from './Footer';
 import { useUser } from '@src/hooks/useUser';
 
-const ShellWrapper = ({ children }) => {
+const ShellWrapper = ({ initialUser, children }) => {
   const pathname = usePathname();
-  console.log(pathname, excludedRoutes)
   const hideLayout = excludedRoutes.includes(pathname);
-  console.log(hideLayout)
+  const { data: user } = useUser(initialUser?._id, initialUser);
 
   return (
     <>

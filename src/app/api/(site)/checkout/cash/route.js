@@ -4,6 +4,7 @@ import { Order } from "@src/models/Order";
 import { User } from "@src/models/User";
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
+import { Notification } from '@src/models/Notification';
 
 const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY);
 
@@ -67,7 +68,20 @@ export async function POST(req) {
     slug
   });
 
-  // global.io.emit("order-placed")
+  global.io.emit("order-placed")
+
+  const adminId = await User.find({ role: "admin" }).distinct("_id");
+  const newNotification = await Notification.create({
+    senderId: userId,
+    recipientId: adminId[0],
+    type: "order",
+    subject: "Comanda noua",
+    content: "O noua comanda a fost plasata ",
+    referenceLink: `/admin/comanda/${newOrder.id}`
+  })
+
+  global.io.emit("newNotification", newNotification)
+
 
   return Response.json({ url: `/comanda/${newOrder._id}` });
 }

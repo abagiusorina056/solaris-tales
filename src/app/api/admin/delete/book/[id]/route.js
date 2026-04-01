@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@src/lib/mongodb";
 import { Book } from "@src/models/Book"
 import cloudinary from "@src/lib/cloudinary";
+import { Author } from "@src/models/Authors";
+import { User } from "@src/models/User";
 
 export async function DELETE(req, { params }) {
   try {
@@ -20,6 +22,21 @@ export async function DELETE(req, { params }) {
     await Book.findByIdAndDelete(id);
 
     global.io.emit("booksDeleted", [id])
+
+    const author = await Author.findById(book.authorId)
+
+    if (author?.userId) {
+      const adminId = await User.find({ role: "admin" }).distinct("_id");
+      const newNotification = await Notification.create({
+        senderId: adminId[0],
+        recipientId: author?.userId,
+        type: "system",
+        subject: "Carte stearsa",
+        content: `Cartea ta, ${book.title}, a fost stearsa de catre admin`,
+      })
+  
+      global.io.emit("newNotification", newNotification)
+    }
 
     const res = NextResponse.json({ book }, { status: 200 });
     return res;

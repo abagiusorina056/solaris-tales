@@ -5,8 +5,11 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@src/components/ui/sidebar"
+import { useAdmin } from "@src/hooks/useAdmin";
 
-export default function AdminPanel({ children }) {
+export default function AdminPanel({ children, admin }) {
+  const { data } = useAdmin(admin);
+
   return (
     <SidebarProvider
       style={

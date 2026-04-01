@@ -37,7 +37,7 @@ import {
 } from "@src/components/ui/sidebar"
 import Image from "next/image"
 import logo from "@public/logo-black.png"
-import { useAdmin } from "@src/app/(admin)/admin/AdminContext"
+import { useAdmin } from "@src/hooks/useAdmin"
 
 const data = {
   user: {
@@ -175,7 +175,7 @@ const data = {
 export function AppSidebar({
   ...props
 }) {
-  const { admin } = useAdmin()
+  const { data: admin } = useAdmin()
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>

@@ -18,6 +18,7 @@ export const orderStatusMap = {
   "canceled" : "Comanda Anulata"
 }
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const phoneRegex = /^(07\d{8}|7\d{8})$/;
 
   // utility functions
 export function cn(...inputs) {
@@ -83,9 +84,28 @@ export const validatePublishForm = (formData) => {
 }
 
 export const validateUpdateProfileForm = (formData) => {
-  if (!emailRegex.test(formData.email) || formData.email === "") {
+  if (
+    !/^[a-zA-ZÀ-ÿ\s'-]+$/.test(formData?.firstName) || 
+    !/^[a-zA-ZÀ-ÿ\s'-]+$/.test(formData?.lastName)
+  ) {
+    toast.error("Numele poate contine doar litere sau caractere speciale (-, ')")
+    return false
+  }
+
+  if (
+    formData?.email && 
+    (!emailRegex.test(formData?.email) || 
+    formData?.email === "")
+  ) {
     toast.error("Adresa de email nu este valida")
     return false
+  }
+
+  const phoneValue = formData.phoneNumber.trim();
+  
+  if (formData?.phoneNumber && !phoneRegex.test(phoneValue)) {
+    toast.error("Numar de telefon invalid");
+    return false;
   }
 
   return true

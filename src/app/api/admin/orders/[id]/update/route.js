@@ -1,6 +1,8 @@
 import { connectDB } from "@src/lib/mongodb";
 import { Author } from "@src/models/Authors";
+import { Notification } from "@src/models/Notification";
 import { Order } from "@src/models/Order";
+import { User } from "@src/models/User";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req, { params }) {
@@ -12,12 +14,23 @@ export async function PATCH(req, { params }) {
 
     const updatedOrder = await Order.findByIdAndUpdate(id, newData, { new: true })
     if (!updatedOrder) {
-      return NextResponse.json({ error: "Autorul nu a fost gasit" }, { status: 404 })
+      return NextResponse.json({ error: "Comanda nu a fost gasita" }, { status: 404 })
     }
     
     global.io.emit("orderUpdated", updatedOrder);
 
-    return NextResponse.json({ messaage: "Comanda actualizata" }, { status: 201 });
+    const adminId = await User.find({ role: "admin" }).distinct("_id");
+    const newNotification = await Notification.create({
+      senderId: adminId[0],
+      recipientId: updatedOrder?.senderId,
+      type: "system",
+      subject: "Comanda modificata",
+      content: `Comanda ${updatedOrder?.slug} a fost modificata de catre admin`,
+    })
+
+    global.io.emit("newNotification", newNotification)
+
+    return NextResponse.json({ messaage: "Comanda modificata" }, { status: 201 });
   } catch (error) {
     console.log(error)
     return NextResponse.json(

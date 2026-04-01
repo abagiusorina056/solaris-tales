@@ -3,7 +3,7 @@
 import { socket } from "@src/lib/socketClient"
 import { useEffect, useState } from "react"
 
-export function useBooks(options = {}, endpoint = "/api/admin/books") {
+export function useBooks(options = {}, endpoint = "/api/admin/books", searchTerm = "") {
   const { limit } = options
 
   const [books, setBooks] = useState([])
@@ -11,7 +11,7 @@ export function useBooks(options = {}, endpoint = "/api/admin/books") {
 
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState(searchTerm)
 
   const [loading, setLoading] = useState(false)
 

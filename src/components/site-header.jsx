@@ -1,10 +1,20 @@
 import { Button } from "@src/components/ui/button"
+import React from "react";
 import { Separator } from "@src/components/ui/separator"
 import { SidebarTrigger } from "@src/components/ui/sidebar"
-import { IconInbox, IconBookUpload, IconBell } from "@tabler/icons-react";
+import { IconInbox, IconBookUpload, IconBell, IconChecks, IconBellX } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 import { Badge } from "./ui/badge";
 import Link from "next/link";
+import { useUser } from "@src/hooks/useUser";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Label } from "./ui/label";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { formatDistanceToNow } from 'date-fns';
+import { ro } from 'date-fns/locale';
+import { cn } from "@src/lib/utils";
+import NotificationsDialog from "@src/app/components/NotificationsDialog";
+import { useAdmin } from "@src/hooks/useAdmin";
 
 const pageTitles = [
   {
@@ -40,8 +50,8 @@ const pageTitles = [
     title: "Cereri"
   },
   {
-    path: "/admin/cont",
-    title: "Cont"
+    path: "/admin/profil",
+    title: "Profil"
   },
   {
     path: "/admin/utilizatori",
@@ -70,8 +80,10 @@ const pageTitles = [
 ]
 
 export function SiteHeader() {
+  const { data: admin, invalidateAdmin } = useAdmin()
   const pathname = usePathname()
   const title = pageTitles.filter(p => pathname.includes(p.path))
+
   return (
     <header
       className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -86,15 +98,12 @@ export function SiteHeader() {
           <Link href="/admin/adauga-carte">
             <IconBookUpload size={32} />
           </Link>
-          <div className="relative mr-8">
-            <Badge
-              variant="default"
-              className="opacity-0 p-1.25 aspect-square! rounded-full top-1 right-1 select-none"
-            />
-            <span className="opacity-30">
-              <IconBell size={32} />
-            </span>
-          </div>
+
+          <NotificationsDialog 
+            user={admin} 
+            invalidate={invalidateAdmin}
+            isDashboard
+          />
         </div>
       </div>
     </header>

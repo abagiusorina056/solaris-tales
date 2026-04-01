@@ -2,16 +2,16 @@ import { connectDB } from "@src/lib/mongodb";
 import { User } from "@src/models/User"
 import { NextResponse } from "next/server";
 
-export async function PATCH(req) {
+export async function PATCH(req, { params }) {
   try {
     await connectDB();
 
     const form = await req.formData();
+    const { id } = await params
 
-    const userId = form.get("userId");
     const image = form.get("image");
 
-    const updatedUser = await User.findByIdAndUpdate(userId, { profileImage: image })
+    const updatedUser = await User.findByIdAndUpdate(id, { profileImage: image })
     if (!updatedUser) {
       return NextResponse.json({ error: "Utilizatorul nu a fost gasit" }, { status: 404 })
     }

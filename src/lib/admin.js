@@ -59,11 +59,12 @@ export const deleteAuthor = async (id) => {
 }
 
 export const createClassicAuthor = async (authorData) => {
-  const { file, name, bio } = authorData
+  const { file, name, bio, isClassicAuthor } = authorData
   const formData = new FormData();
   formData.append("image", file);
   formData.append("name", name);
   formData.append("bio", bio);
+  formData.append("isClassicAuthor", `${isClassicAuthor}`);
 
   const res = await fetch(`/api/admin/add/author`, {
     method: "POST",

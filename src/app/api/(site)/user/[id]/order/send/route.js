@@ -1,4 +1,5 @@
 import { connectDB } from "@src/lib/mongodb";
+import { Notification } from "@src/models/Notification";
 import { Order } from "@src/models/Order";
 import { User } from "@src/models/User";
 import mongoose from "mongoose";
@@ -44,6 +45,18 @@ export async function POST(req, { params }) {
 
     user.orders.push(newOrder._id)
     user.save()
+
+    const adminId = await User.find({ role: "admin" }).distinct("_id");
+    const newNotification = await Notification.create({
+      senderId: id,
+      recipientId: adminId[0],
+      type: "order",
+      subject: "Comanda noua",
+      content: "O noua comanda a fost plasata ",
+      referenceLink: `/admin/comanda/${newOrder.id}`
+    })
+
+    global.io.emit("newNotification", newNotification)
     
     const res = NextResponse.json({ newOrder }, { status: 201 });
     return res;

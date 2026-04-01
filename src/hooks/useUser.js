@@ -1,17 +1,41 @@
 "use client"
 
-import { createContext, useContext, useState } from "react"
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
-const UserContext = createContext(null)
+export const useUser = (id = null, initialUser = null) => {
+  const queryClient = useQueryClient()
 
-export function UserProvider({ initialUser, children }) {
-  const [user, setUser] = useState(initialUser)
+  const query = useQuery({
+    queryKey: ['user'], 
+    queryFn: async () => {
+      const existingData = queryClient.getQueryData(['user']);
+      const activeId = id || existingData?._id;
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  )
+      if (!activeId) {
+        console.warn("useUser: No ID found for fetch");
+        return null;
+      }
+
+      const res = await fetch(`/api/user/${activeId}`);
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error('Failed to fetch user');
+      }
+
+      const data = await res.json();
+      return data?.user;
+    },
+    initialData: initialUser,
+    enabled: !!id, 
+    staleTime: 0, 
+    gcTime: 1000 * 60 * 60,
+  })
+
+  // A helper to refresh this specific user's data
+  const invalidateUser = () => {
+    queryClient.invalidateQueries({ queryKey: ['user'] })
+  }
+
+  return { ...query, invalidateUser }
 }
-
-export const useUser = () => useContext(UserContext)

@@ -29,6 +29,65 @@ export async function GET(req, { params }) {
       }, 
       {
         $lookup: {
+          from: 'notifications', 
+          localField: '_id', 
+          foreignField: 'recipientId', 
+          as: 'notifications'
+        }
+      },
+      {
+        $unwind: {
+          path: "$notifications",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: "users",
+          let: { sender_id: "$notifications.senderId" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_id", "$$sender_id"] } } },
+            { $project: { firstName: 1, lastName: 1, profileImage: 1 } }
+          ],
+          as: "notifications.sender"
+        }
+      },
+      {
+        $unwind: {
+          path: "$notifications.sender",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $group: {
+          _id: "$_id",
+          firstName: { $first: "$firstName" },
+          lastName: { $first: "$lastName" },
+          profileImage: { $first: "$profileImage" },
+          role: { $first: "$role" },
+          
+          favoriteBooks: { $first: "$favoriteBooks" },
+          bagBooks: { $first: "$bagBooks" },
+          allOrders: { $first: "$allOrders" },
+          authorProfile: { $first: "$authorProfile" },
+          authoredBooks: { $first: "$authoredBooks" },
+
+          notifications: { $push: "$notifications" }
+        }
+      },
+      {
+        $addFields: {
+          notifications: {
+            $filter: {
+              input: "$notifications",
+              as: "n",
+              cond: { $gt: [{ $size: { $objectToArray: "$$n" } }, 0] }
+            }
+          }
+        }
+      },
+      {
+        $lookup: {
           from: 'books', 
           localField: 'bagProducts.productId', 
           foreignField: '_id', 

@@ -8,9 +8,16 @@ import { bagItem, changeFavorite } from '@src/lib/user'
 import { BsBagPlusFill } from 'react-icons/bs'
 import { IoCheckmarkCircleSharp } from 'react-icons/io5'
 
-const LayoutTwo = ({ book, userId, favorite, reviews }) => {
+const LayoutTwo = ({ 
+    book, 
+    userId, 
+    favorite, 
+    reviews
+}) => {
     const router = useRouter()
     const addedRef = useRef(null);
+    const bookDiscount = parseFloat(book?.discount || "0")
+    const bookPrice = parseFloat(book?.price)
     const [isFavorite, setIsFavorite] = useState(favorite)
     const averageOfReviews = reviews?.length === 0 ? 0 : averageReview(reviews)
 
@@ -57,8 +64,10 @@ const LayoutTwo = ({ book, userId, favorite, reviews }) => {
         </div>
         <div className='flex items-baseline-last justify-between w-full px-10 mt-3'>
             <div className='flex flex-col'>
-                {book?.discount && <span className='text-gray-300 line-through text-xl'>99.99 RON</span>}
-                <span className={cn('text-3xl font-bold', book?.discount && 'text-[#FB6767]')}>{book?.price} RON</span>
+                {bookDiscount > 0 && <span className='text-gray-300 line-through text-xl'>{bookPrice.toFixed(2)} RON</span>}
+                <span className={cn('text-3xl font-bold', book?.discount && 'text-[#fb6767]')}>
+                    {bookDiscount > 0 ? (((100 - bookDiscount) * bookPrice) / 100).toFixed(2) : bookPrice.toFixed(2)} RON
+                </span>
             </div>
             <div className='relative'>
                 <BsBagPlusFill
@@ -76,9 +85,9 @@ const LayoutTwo = ({ book, userId, favorite, reviews }) => {
             </div>
         </div>
 
-        {book.discount && (
+        {bookDiscount > 0 && (
             <span className='absolute top-4 -left-4 text-white font-bold text-2xl bg-[#FB6767] px-6 select-none rounded-r-sm'>
-                -{book.discount}%
+                -{bookDiscount}%
             </span>
         )}
         {isFavorite ? (

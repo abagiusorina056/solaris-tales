@@ -6,8 +6,22 @@ export const getAdmin = unstable_cache(
   
   async () => {
     await connectDB()
+
+    const admin = await User.aggregate([
+      {
+        $match: { role: "admin" }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "recipientId",
+          as: "notifications"
+        }
+      }
+    ])
     
-    return User.findOne({ role: "admin" })
+    return admin[0]
   },
   ["admin"],
   { revalidate: 3600 }

@@ -1,3 +1,4 @@
+import { IconStar } from '@tabler/icons-react';
 import React from 'react'
 import { CiDeliveryTruck, CiGift } from "react-icons/ci";
 import { PiShootingStar } from "react-icons/pi";
@@ -16,7 +17,7 @@ const Benefits = () => {
             <span className='text-lg opacity-50 font-medium'>la fiecare comanda </span>
         </div>
         <div className='flex flex-col items-center text-center'>
-            <PiShootingStar size={64} className='text-[#8C8C8C]' />
+            <IconStar size={64} className='text-[#8C8C8C] border-5 border-#8C8C8C] p-1.5 rounded-full' />
             <span>Puncte de fidelitate </span>
             <span className='text-lg opacity-50 font-medium'>pentru fiecare achizitie </span>
         </div>

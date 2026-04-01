@@ -1,13 +1,42 @@
 "use client";
-import React from 'react'
+
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { Input } from '@src/components/ui/input';
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { Button } from '@src/components/ui/button';
 import { BsEnvelope } from 'react-icons/bs';
+import { useUser } from '@src/hooks/useUser';
 
 const Footer = () => {
+    const { user } = useUser()
 
+    const defaultValues = {
+        email: user?.email || "",
+        name: user?.firstName + " " + user?.lastName || ""
+    }
+    const [subscribeForm, setSubscribeForm] = useState(defaultValues)
+    const [isSubscribing, setIsSubscribing] = useState(false)
+    const [hideSubscricptionForm, setHideSubscriptionForm] = useState(false)
+
+    const handleChange = (e) => {
+        const { name, value } = e.target
+
+        setSubscribeForm(pev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const handleSubmit = () => {
+        setIsSubscribing(true)
+
+        const isValid = true
+
+        if (!isValid) {
+            return
+        }
+    }
   return (
     <footer className='flex flex-col text-white pt-12 pb-6 bg-[var(--color-primary)]'>
         <div className='flex justify-between items-start  px-32'>
@@ -48,6 +77,8 @@ const Footer = () => {
                         type="email"
                         name="email"
                         id="email"
+                        value={subscribeForm.email}
+                        onChange={handleChange}
                         autoComplete="off"
                         className="rounded-none border-0 border-b-1 border-whtie  ring-0 outline-0 bg-transparent text-white placeholder:text-gray-400 placeholder:select-none"
                     />
@@ -56,11 +87,14 @@ const Footer = () => {
                         type="text"
                         name="name"
                         id="name"
+                        value={subscribeForm.name}
+                        onChange={handleChange}
                         autoComplete="off"
                         className="w-full rounded-none border-0 border-b-1 border-white ring-0 outline-0 bg-transparent text-white placeholder:text-gray-400 placeholder:select-none"
                     />
                 </div>
                 <Button
+                    disabled={isSubscribing}
                     variant="default"
                     className="bg-white hover:text-white cursor-pointer text-[var(--color-primary)] mt-5 rounded-none uppercase font-bold px-6 text-xl"
                 >

@@ -1,5 +1,7 @@
 import { connectDB } from "@src/lib/mongodb";
 import { Author } from "@src/models/Authors";
+import { Notification } from "@src/models/Notification";
+import { User } from "@src/models/User";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req, { params }) {
@@ -15,6 +17,21 @@ export async function PATCH(req, { params }) {
     }
     
     global.io.emit("authorUpdated", updatedAuthor);
+
+    if (updatedAuthor?.userId) {
+      const adminId = await User.find({ role: "admin" }).distinct("_id");
+      const newNotification = await Notification.create({
+        senderId: adminId[0],
+        recipientId: updatedAuthor?.userId,
+        type: "system",
+        subject: "Profil actualizat",
+        content: "Datele profilului tau au fost modificate de catre admin",
+        referenceLink: `/profil`
+      })
+  
+      global.io.emit("newNotification", newNotification)
+    }
+
 
     return NextResponse.json({ messaage: "Autor actualizat" }, { status: 201 });
   } catch (error) {

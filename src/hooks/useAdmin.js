@@ -1,27 +1,33 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
-export function useAdmin() {
-  const [admin, setAdmin] = useState(null)
-  const [loading, setLoading] = useState(true)
+export const useAdmin = (initialAdmin = null) => {
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    async function loadAdmin() {
-      try {
-        const res = await fetch("/api/admin/me")
-        const data = await res.json()
-
-        setAdmin(data.admin)
-      } catch (err) {
-        console.error("Failed to load admin", err)
-      } finally {
-        setLoading(false)
+  const query = useQuery({
+    queryKey: ['admin'], 
+    queryFn: async () => {
+      const res = await fetch(`/api/admin/me`);
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error('Failed to fetch user');
       }
-    }
 
-    loadAdmin()
-  }, [])
+      const data = await res.json();
+      return data?.admin;
 
-  return { admin, loading }
+    },
+    initialData: initialAdmin, 
+    staleTime: 0, 
+    gcTime: 1000 * 60 * 60,
+  })
+
+  // A helper to refresh this specific user's data
+  const invalidateAdmin = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin'] })
+  }
+
+  return { ...query, invalidateAdmin }
 }

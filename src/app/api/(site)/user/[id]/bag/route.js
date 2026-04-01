@@ -63,7 +63,7 @@ export async function PATCH(req, { params }) {
     }, 0);
 
     global.io.emit("bag", { 
-      newBagContent: bagContent, 
+      newBagContent: bagContent,
       newQuantities: quantities,
       newTotal: total.toFixed(2)
     });

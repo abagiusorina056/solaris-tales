@@ -100,7 +100,8 @@ const AddBookView = ({ }) => {
     await createClassicAuthor({
       file,
       name: newAuthorFormData.name,
-      bio: newAuthorFormData.bio
+      bio: newAuthorFormData.bio,
+      isClassicAuthor: true
     })
     .then(() => {
       setIsCreatingAuthor(false)

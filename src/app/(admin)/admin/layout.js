@@ -2,6 +2,7 @@ import React from 'react'
 import AdminPanel from './AdminPanel';
 import { AdminProvider } from './AdminContext';
 import { getAdmin } from '@src/lib/getAdmin';
+import QueryProvider from '@src/providers/QueryProvider';
 
 export const metadata = {
   title: "Dashboard | Solaris Tales",
@@ -15,11 +16,11 @@ const layout = async ({ children }) => {
   const admin = await getAdmin()
 
   return (
-    <AdminProvider admin={JSON.parse(JSON.stringify(admin))}>
-      <AdminPanel>
+    <QueryProvider>
+      <AdminPanel admin={JSON.parse(JSON.stringify(admin))}>
         {children}
       </AdminPanel>
-    </AdminProvider>
+    </QueryProvider>
   )
 }
 

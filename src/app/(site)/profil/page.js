@@ -55,12 +55,12 @@ import { IconHeartX, IconRotate, IconStar, IconTruckDelivery } from "@tabler/ico
 import { Separator } from "@src/components/ui/separator";
 import Link from "next/link";
 import ProfileSkeleton from "@src/components/skeletons/site/ProfileSkeleton";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@src/components/ui/input-group";
 
 const UserView = () => {
-  const { user } = useUser()
+  const { data: user, invalidateUser } = useUser()
   const router = useRouter();
 
-  const [userState, setUserState] = useState(user)
   const [isDisabled, setIsDisabled] = useState(false);
   const [searchedMyBooks, setSearchedMyBooks] = useState(user?.authoredBooks);
   const [searchedMyFavs, setSearchedMyFavs] = useState(user?.favoriteBooks);
@@ -84,13 +84,18 @@ const UserView = () => {
 
   useEffect(() => {
     socket.on("userUpdated", (updatedUser) => {
-      setUserState(updatedUser)
+      invalidateUser()
+    })
+
+    socket.on("order-placed", () => {
+      invalidateUser()
     })
 
     return () => {
       socket.off("userUpdated")
+      socket.off("order-placed")
     }
-  }, [])
+  }, [invalidateUser])
 
   useEffect(() => {
     const filtered = search(user?.favoriteBooks, myFavsSearchTerm);
@@ -114,7 +119,7 @@ const UserView = () => {
   const chunkedFavs = chunkArray(searchedMyFavs, 2);
   const chunkedBooks = chunkArray(searchedMyBooks, 2);
 
-  return !user._id && !userState._id ? (
+  return !user._id ? (
     <ProfileSkeleton />
   ) : (
     <div className="w-full">
@@ -148,7 +153,7 @@ const UserView = () => {
         </Dialog>
       </PageTitle>
       <div className="w-full px-16 mt-4">
-        <UserCard user={userState} />
+        <UserCard user={user} />
       </div>
       
       <Separator className="my-8" />
@@ -163,7 +168,7 @@ const UserView = () => {
               <TableRow className="text-xl font-medium">
                 <TableHead>#</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Modalitate de plata</TableHead>
+                <TableHead>Metoda de plata</TableHead>
                 <TableHead className="text-right">Total</TableHead>
               </TableRow>
             </TableHeader>
@@ -228,7 +233,11 @@ const UserView = () => {
                 chunkedFavs.map((pair, i) => (
                   <CarouselItem key={i} className="grid grid-cols-2 gap-4 md:gap-16">
                     {pair.map((book) => (
-                      <LayoutThree key={book._id} book={book} />
+                      <LayoutThree 
+                        key={book._id} 
+                        book={book}
+                        userId={user._id}
+                      />
                     ))}
                   </CarouselItem>
                 ))
@@ -275,7 +284,11 @@ const UserView = () => {
                     chunkedBooks.map((pair, i) => (
                       <CarouselItem key={i} className="grid grid-cols-2 gap-4 md:gap-16">
                         {pair.map((book) => (
-                          <LayoutThree key={book._id} book={book} />
+                          <LayoutThree 
+                            key={book._id}
+                            book={book}
+                            isOwnedBook
+                          />
                         ))}
                       </CarouselItem>
                     ))
@@ -301,7 +314,8 @@ const UserCard = ({ user }) => {
     instagram: user?.instagram || "",
     facebook: user?.facebook || "",
     bio: user?.bio || "",
-    dob: user?.dob || ""
+    dob: user?.dob || "",
+    phoneNumber: user?.phoneNumber || ""
   }
   const [formData, setFormData] = useState(defaults)
   const [imageDialog, setImageDialog] = useState(false);
@@ -386,7 +400,15 @@ const UserCard = ({ user }) => {
           <div className="flex flex-col flex-1/3 text-2xl">
             <div className="w-full flex items-center justify-between border-b border-[var(--color-primary)]">
               <span>Telefon</span>
-              <span className="font-bold">{user?.phoneNumber || "Nexam"}</span>
+              <span className="font-bold">
+                {
+                  user?.phoneNumber ? (
+                    user?.phoneNumber[0] === "0" 
+                    ? "+4" +  user?.phoneNumber 
+                    : "+40" + user?.phoneNumber
+                  )  : "-"
+                }
+              </span>
             </div>
             <div className="w-full flex items-center justify-between border-b border-[var(--color-primary)]">
               <span>Gen</span>
@@ -417,7 +439,7 @@ const UserCard = ({ user }) => {
                   ? truncateText(user?.bio, detailedBio ? user?.bio.length : 150) 
                   : "Nimic"
               }</p>
-              {user?.bio ? (
+              {user?.bio && user?.bio?.length > 150 ? (
                 <span onClick={() => setDetailedBio(prev => !prev)} className="text-[var(--color-primary)] font-bold cursor-pointer">
                   {"Vezi mai " + (detailedBio ? "putin" : "mult")}
                 </span>
@@ -451,7 +473,7 @@ const UserCard = ({ user }) => {
               type="text"
               name="instagram"
               id="instagram-preview"
-              value={(user?.instagram && "@" + user?.instagram) || "-"}
+              value={user?.instagram ? "@" + user.instagram : "-"}
               readOnly
               className="w-full !text-2xl"
             />
@@ -605,15 +627,20 @@ const UserCard = ({ user }) => {
                     <FaPhoneAlt size={24} />
                     <span>Telefon</span>
                   </Label>
-                  <Input
-                    placeholder=""
-                    type="text"
-                    name="phoneNumber"
-                    id="phoneNumber"
-                    value={formData?.phoneNumber || ""}
-                    onChange={handleFormChange}
-                    className="w-full !text-xl"
-                  />
+                  <InputGroup className="py-0 bg-transparent placeholder:select-none">
+                    <InputGroupAddon align="inline-start" className={"pr-2"}>
+                      <span className='text-xl opacity-80'>+40</span>
+                    </InputGroupAddon>
+                    <InputGroupInput 
+                      placeholder="Telefon"
+                      type="number"
+                      name="phoneNumber"
+                      id="phoneNumber"
+                      value={formData?.phoneNumber || ""}
+                      onChange={handleFormChange}
+                      className="w-full !text-xl"
+                    />
+                  </InputGroup>
                 </div>
               )}
 
@@ -627,15 +654,20 @@ const UserCard = ({ user }) => {
                   <FaPhoneAlt size={24} />
                   <span>Telefon</span>
                 </Label>
-                <Input
-                  placeholder=""
-                  type="text"
-                  name="phoneNumber"
-                  id="phoneNumber"
-                  value={formData?.phoneNumber || ""}
-                  onChange={handleFormChange}
-                  className="w-full !text-xl"
-                />
+                <InputGroup className="py-0 bg-transparent placeholder:select-none">
+                  <InputGroupAddon align="inline-start" className={"pr-2"}>
+                    <span className='text-xl opacity-80'>+40</span>
+                  </InputGroupAddon>
+                  <InputGroupInput 
+                    placeholder=""
+                    type="number"
+                    name="phoneNumber"
+                    id="phoneNumber"
+                    value={formData?.phoneNumber || ""}
+                    onChange={handleFormChange}
+                    className="w-full !text-xl"
+                  />
+                </InputGroup>
               </div>
             )}
             <div className="w-full">

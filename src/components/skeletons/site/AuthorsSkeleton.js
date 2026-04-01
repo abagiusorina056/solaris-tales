@@ -8,7 +8,7 @@ import { FaFilter, FaSearch, FaSortAmountDown } from 'react-icons/fa'
 const AuthorsSkeleton = () => {
   return (
     <div className="w-full flex flex-col items-center">
-      <PageTitle title="Carti" />
+      <PageTitle title="Autori" />
 
       <div className="w-full flex items-center justify-end mt-8 px-8" >
         <IconLoader2 className='rotate mr-2' />

@@ -14,33 +14,71 @@ import { Popover, PopoverContent, PopoverTrigger } from "@src/components/ui/popo
 import { Button } from "@src/components/ui/button";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoNotificationsOutline } from "react-icons/io5";
-import { useUsers } from "@src/hooks/useUsers";
 import { useUser } from "@src/hooks/useUser";
-import { IconDashboard } from "@tabler/icons-react";
+import { IconDashboard, IconLoader2 } from "@tabler/icons-react";
 import { Separator } from "@src/components/ui/separator";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { LuHeartOff } from "react-icons/lu";
+import { bagItem, changeFavorite } from "@src/lib/user";
+import { toast } from "sonner";
+import NotificationsDialog from "./NotificationsDialog";
 
 const Navbar = () => {
-	const { user } = useUser()
+	const { data: user, invalidateUser } = useUser()
 	const pathname = usePathname() 
-	const [bag, setBag] = useState(user?.bagBooks || []);
-	const [favs, setFavs] = useState(user?.favoriteBooks || [])
-		
+	const router = useRouter()
+	const [search, setSearch] = useState("")
+	const [isAddingToBag, setIsAddingToBag] = useState(false)
+	const [isRemovingFav, setIsRemovingFav] = useState(false)
+	const favs = user?.favoriteBooks || []
+	const bag = user?.bagBooks || []
+	
+	const handleAddToBag = () => {
+		setIsAddingToBag(true)
+
+		bagItem(favs[0]._id, user._id, "add")
+			.then(() => {
+				toast.success("Cartea a fost adaugata in cos")
+				setIsAddingToBag(false)
+			})
+	}
+
+	const handleChangeFavorite = () => {
+		setIsRemovingFav(true)
+
+		changeFavorite(favs[0]._id, user._id, "add")
+			.then(() => {
+				toast.success("Cartea a fost eliminata de la favorite")
+				setIsRemovingFav(false)
+			})
+	}
+
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		if (search.length === 0) {
+			return
+		}
+
+		router.push(`/carti?term=${search}`)
+
+		setTimeout(() => setSearch(""), 100)
+	}
+
 	useEffect(() => {
 		socket.on("favorite", ({ favorites, bookId }) => {
-			setFavs(favorites)
+			invalidateUser()
 		});
 		socket.on("bag", ({ newBagContent, newQuantities}) => {
-			setBag(newBagContent)
+			invalidateUser()
 		});
-		socket.on("order-placed", () => setBag([]))
+		socket.on("order-placed", () => invalidateUser())
 
 		return () => {
 			socket.off("favorite");
 			socket.off("bag");
 			socket.off("order-placed");
 		};
-	})
+	}, [invalidateUser])
 
 	return (
 		<nav className="w-full px-24 py-3 text-[var(--color-primary)] shadow-xl">
@@ -87,21 +125,36 @@ const Navbar = () => {
 					</div>
 				</div>
 				<div className="flex items-center gap-7">
-					<form className="flex items-center bg-[var(--color-primary)] rounded-sm px-3 py-0.5">
+					<form
+						onSubmit={handleSubmit}
+						className="flex items-center bg-[var(--color-primary)] rounded-sm pl-3 py-0.5"
+					>
 						<Input
 							placeholder="Cauta..."
 							type="text"
 							name="search"
 							id="search"
+							disabled={pathname.includes("/carti")}
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
 							autoComplete="off"
 							className="w-full p-0 border-0 ring-0 outline-0 bg-transparent text-white placeholder:text-white placeholder:select-none"
 						/>
-						<FaSearch size={28} className="text-white" cursor="pointer" />
+						<Button className="bg-transparent hover:bg-transparent p-0">
+							<FaSearch 
+								size={28} 
+								className="text-white" 
+								cursor="pointer" 
+							/>
+						</Button>
 					</form>
 
-					{/* {user && (
-						<IoNotificationsOutline size={32} cursor="pointer" />
-					)} */}
+					{user && (
+						<NotificationsDialog 
+							user={user}
+							invalidate={invalidateUser}
+						/>
+					)}
 					<div className="relative">
 						<Popover>
 							<PopoverTrigger asChild>
@@ -118,11 +171,11 @@ const Navbar = () => {
 							<PopoverContent align="end" className={cn("w-120 text-[var(--color-primary)] font-semibold", !favs?.length && "flex flex-col items-center")}>							
 								<div className="flex w-full justify-between">
 									<span>Favorite</span>
-									{favs.length ? (
-										<span>({favs?.length} {favs.length === 1 ? "produs" : "produse"})</span>
+									{favs?.length ? (
+										<span>({favs?.length} {favs?.length === 1 ? "produs" : "produse"})</span>
 									) : null}
 								</div>
-								<hr className="w-full border-1 border-gray-200" />
+								<Separator />
 								{favs?.length ? (
 									<>
 										<div className="flex w-full my-2 gap-2">
@@ -141,16 +194,32 @@ const Navbar = () => {
 												<span>{favs[0]?.author}</span>
 												<p className="opacity-60 text-base mt-2">{truncateText(favs[0]?.description, 100)}</p>
 												<div className="flex items-center gap-2 mt-1">
-													<Button className="flex flex-1/2 items-end w-full cursor-pointer bg-[var(--color-primary)]">
-														<BsBagPlusFill size={32} className="scale-120" />
+													<Button
+														onClick={handleAddToBag}
+														disabled={isAddingToBag}
+														className="flex flex-1/2 items-end w-full cursor-pointer bg-[var(--color-primary)]"
+													>
+														{isAddingToBag ? (
+															<IconLoader2 className="rotate" />
+														) : (
+															<BsBagPlusFill size={32} className="scale-120" />
+														)}
 													</Button>
-													<Button className="flex flex-1/2 items-end w-full cursor-pointer">
-														<FaRegTrashCan size={32} className="scale-120" />
+													<Button
+														onClick={handleChangeFavorite}
+														disabled={isRemovingFav}
+														className="flex flex-1/2 items-end w-full cursor-pointer"
+													>
+														{isRemovingFav ? (
+															<IconLoader2 className="rotate" />
+														) : (
+															<LuHeartOff size={32} className="scale-120" />
+														)}
 													</Button>
 												</div>
 											</div>
 										</div>
-										<hr className="w-full border-1 border-gray-200" />
+										<Separator />
 										<div className="mt-2">
 											<Link 
 												href="/profil#favorite"
@@ -188,7 +257,7 @@ const Navbar = () => {
 							<BsBagFill size={32} cursor="pointer" />
 						</div>
 					</Link>
-					{user.role === "admin" && (
+					{user?.role === "admin" && (
 						<span className="h-8 flex items-center gap-5">
 							<Separator orientation="vertical" className={"h-5 border-1 border-[var(--color-primary)] bg-[var(--color-primary)]"} />
 							<Link href="/admin/dashboard">

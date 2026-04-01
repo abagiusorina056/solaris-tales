@@ -5,10 +5,9 @@ export const updateProfilImage = async (img, userId) => {
   const uploadedUrl = await uploadImage(img)
 
   const form = new FormData();
-  form.append("userId", userId);
   form.append("image", uploadedUrl);
 
-  const res = await fetch(`/api/user/update-image-profile`, {
+  const res = await fetch(`/api/user/${userId}/update-image-profile`, {
     method: "PATCH",
     body: form
   });
@@ -80,7 +79,7 @@ export const bagItem = async (bookId, userId, action) => {
 }
 
 export const publishRequest = async (data, userId) => {
-  // upload PDF / image first
+  // upload pdf / image first
   const uploadedUrl = await uploadPdf(data.bookFragments);
 
   const form = new FormData();
@@ -88,14 +87,14 @@ export const publishRequest = async (data, userId) => {
   form.append("userId", userId.toString());
   form.append("uploadedUrl", uploadedUrl);
 
-  // send the rest of the data as JSON string
+  // send the rest of the data as json string
   form.append("data", JSON.stringify({
     phoneNumber: data.phoneNumber,
     title: data.title,
     description: data.description,
   }));
 
-  const res = await fetch("/api/user/publish-request", {
+  const res = await fetch(`/api/user/${userId}/publish-request`, {
     method: "POST",
     body: form,
   });
@@ -142,4 +141,37 @@ export const submitOrder = async (userId = "", orderData) => {
 
   const { url } = await response.json();
   window.location.href = url
+}
+
+export const markNotificationAsRead = async (notificationId, userId) => {
+  const res = await fetch(`/api/user/${userId}/notification`, {
+    method: 'PATCH',
+    body: JSON.stringify({ 
+      notificationId
+    }),
+  })
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    toast.error(result.error || "Eroare");
+    return;
+  }
+
+  toast.success("Notificare marcata ca citita");
+}
+
+export const markMultipleNotificationsAsRead = async (userId) => {
+  const res = await fetch(`/api/user/${userId}/notification/multiple`, {
+    method: 'PATCH',
+  })
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    toast.error(result.error || "Eroare");
+    return;
+  }
+
+  toast.success("Notificariile au fost marcate ca citite");
 }

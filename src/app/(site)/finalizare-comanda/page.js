@@ -34,7 +34,7 @@ import { Input } from '@src/components/ui/input'
 import { Button } from '@src/components/ui/button'
 import { useUser } from '@src/hooks/useUser'
 import Image from 'next/image'
-import { truncateText, validateOrderForm } from '@src/lib/utils'
+import { cn, truncateText, validateOrderForm } from '@src/lib/utils'
 import { Separator } from '@src/components/ui/separator'
 import { Checkbox } from '@src/components/ui/checkbox'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
@@ -42,7 +42,7 @@ import { submitOrder } from '@src/lib/user'
 import { PiShootingStar } from 'react-icons/pi'
 
 const Checkout = () => {
-  const { user } = useUser()
+  const { data: user } = useUser()
   let quantities = []
   user?.bagProducts.forEach(item => {
     quantities[item?.productId] = item?.quantity;
@@ -51,8 +51,11 @@ const Checkout = () => {
   const inTotal = user?.bagBooks.reduce((sum, product) => {
     const quantity = quantities[product?._id] ?? 1;
     const price = Number(product?.price) || 0;
-    
-    return sum + price * quantity;
+    const finalPrice = product?.discount
+      ? ((100 - parseInt(product.discount)) * price / 100)
+      : price
+
+    return sum + finalPrice.toFixed(2) * quantity;
   }, 0);
   const defaultValues = {
     name: user?.firstName + " " + user?.lastName,
@@ -129,22 +132,28 @@ const Checkout = () => {
     <div className='w-full pt-16'>
       <div className='w-full px-16'>
         <div className='flex gap-16 w-full flex-nowrap overflow-x-auto scrollbar-hide pb-6'>
-          {user.bagBooks.map((book, i) => (
-            <div key={i} className='w-1/6 shrink-0'>
-              <Image
-                src={book?.image}
-                width={200}
-                height={200}
-                className='w-full aspect-[1/1.5] object-cover object-center'
-                alt={book?.title}
-              />
-              <p className='font-semibold text-xl'>{truncateText(book.title, 30)}</p>
-              <div className='flex justify-between w-full text-lg'>
-                <span>{book.price} RON</span>
-                <span className='opacity-40'>x{quantities[book._id]}</span>
+          {user.bagBooks.map((book, i) => {
+            const finalPrice = book?.discount
+              ? ((100 - parseInt(book.discount)) * parseFloat(book?.price) / 100)
+              : book?.price
+
+            return (
+              <div key={i} className='w-1/6 shrink-0'>
+                <Image
+                  src={book?.image}
+                  width={200}
+                  height={200}
+                  className='w-full aspect-[1/1.5] object-cover object-center'
+                  alt={book?.title}
+                />
+                <p className='font-semibold text-xl'>{truncateText(book.title, 30)}</p>
+                <div className='flex justify-between w-full text-lg'>
+                  <span className={cn(book?.discount && "text-[#fb6767]")}>{parseFloat(finalPrice).toFixed(2)} RON</span>
+                  <span className='opacity-40'>x{quantities[book._id]}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
         <div className='flex items-start gap-4'>
           <div className='flex-1/2'>

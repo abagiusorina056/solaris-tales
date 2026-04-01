@@ -3,6 +3,7 @@ import ShellWrapper from './ShellWrapper';
 import { getUser } from '@src/lib/utils';
 import { UserProvider } from '@src/hooks/useUser';
 import { cookies } from 'next/headers';
+import QueryProvider from '@src/providers/QueryProvider';
 
 export default async function LayoutWrapper({ children }) {
   const cookieStore = await cookies()
@@ -10,10 +11,10 @@ export default async function LayoutWrapper({ children }) {
   const user = await getUser(id)
 
   return (
-    <UserProvider initialUser={user}>
-      <ShellWrapper>
+    <QueryProvider>
+      <ShellWrapper initialUser={user}>
         {children}
       </ShellWrapper>
-    </UserProvider>
+    </QueryProvider>
   )
 }

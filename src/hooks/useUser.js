@@ -8,15 +8,15 @@ export const useUser = (id = null, initialUser = null) => {
   const query = useQuery({
     queryKey: ['user'], 
     queryFn: async () => {
-      const existingData = queryClient.getQueryData(['user']);
-      const activeId = id || existingData?._id;
+      // const existingData = queryClient.getQueryData(['user']);
+      // const activeId = id || existingData?._id;
 
-      if (!activeId) {
-        console.warn("useUser: No ID found for fetch");
-        return null;
-      }
+      // if (!activeId) {
+      //   console.warn("useUser: No ID found for fetch");
+      //   return null;
+      // }
 
-      const res = await fetch(`/api/user/${activeId}`);
+      const res = await fetch(`/api/me`);
       
       if (!res.ok) {
         const errorText = await res.text();

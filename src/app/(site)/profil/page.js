@@ -56,10 +56,12 @@ import { Separator } from "@src/components/ui/separator";
 import Link from "next/link";
 import ProfileSkeleton from "@src/components/skeletons/site/ProfileSkeleton";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@src/components/ui/input-group";
+import { useQueryClient } from "@tanstack/react-query";
 
 const UserView = () => {
   const { data: user, invalidateUser } = useUser()
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [isDisabled, setIsDisabled] = useState(false);
   const [searchedMyBooks, setSearchedMyBooks] = useState(user?.authoredBooks);
@@ -79,7 +81,10 @@ const UserView = () => {
   const handleLogout = () => {
     setIsDisabled(true);
     logout()
-      .then(() => router.replace("/login"));
+      .then(() => {
+        queryClient.clear();
+        router.push("/login")
+      });
   };
 
   useEffect(() => {
@@ -437,7 +442,7 @@ const UserCard = ({ user }) => {
               <p>{
                 user?.bio 
                   ? truncateText(user?.bio, detailedBio ? user?.bio.length : 150) 
-                  : "Nimic"
+                  : "-"
               }</p>
               {user?.bio && user?.bio?.length > 150 ? (
                 <span onClick={() => setDetailedBio(prev => !prev)} className="text-[var(--color-primary)] font-bold cursor-pointer">

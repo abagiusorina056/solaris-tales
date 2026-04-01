@@ -12,7 +12,8 @@ export async function GET(req, { params }) {
     await connectDB();
     const cookieStore = await cookies();
     const userId = cookieStore.get("user_id")?.value;
-    console.log(userId)
+    
+    if (!userId) return NextResponse.json({ user: null }, { status: 401 });
 
     const userArray = await User.aggregate([
       {

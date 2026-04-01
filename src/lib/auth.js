@@ -52,7 +52,6 @@ export const login = async (loginData) => {
     toast.error(data.error)
   } else {
     toast.success("Autentificare reusita")
-    redirect("/")
   }
 }
 

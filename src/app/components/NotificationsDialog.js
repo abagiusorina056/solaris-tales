@@ -193,18 +193,20 @@ const NotificationsDialog = ({ user, invalidate, isDashboard = false}) => {
                               )}
                             </Button>
                           )}
-                          <Button
-                            variant={"ghost"}
-                            onClick={() => {}}
-                            className={cn(
-                              "bg-black hover:bg-black text-white hover:text-white cursor-pointer transition-all duration-200",
-                              !isDashboard && "text-[var(--color-primary)] hover:text-[var(--color-primary)] bg-[#E6C6A1] hover:bg-[#E6C6A1]"
-                            )}
-                          >
-                            <Link href={n?.referenceLink} target="_blank">
-                              Detalii
-                            </Link>
-                          </Button>
+                          {n?.referenceLink && (
+                            <Button
+                              variant={"ghost"}
+                              onClick={() => {}}
+                              className={cn(
+                                "bg-black hover:bg-black text-white hover:text-white cursor-pointer transition-all duration-200",
+                                !isDashboard && "text-[var(--color-primary)] hover:text-[var(--color-primary)] bg-[#E6C6A1] hover:bg-[#E6C6A1]"
+                              )}
+                            >
+                              <Link href={n?.referenceLink} target="_blank">
+                                Detalii
+                              </Link>
+                            </Button>
+                          )}
                         </div>
                       </CardFooter>
                     </Card>

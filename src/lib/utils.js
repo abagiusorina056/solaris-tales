@@ -295,9 +295,9 @@ export const getSelectedIds = (data, rowSelection) => {
 
 export const getUser = async (id) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SOCKET_URL}/api/user/${id}`,
+    `/api/me`,
     {
-      credentials: "include"
+      credentials: "include",
     }
   )
 

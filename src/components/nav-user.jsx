@@ -30,6 +30,7 @@ import {
 } from "@src/components/ui/sidebar"
 import sorina from "@public/mockup-staff/sorina.png"
 import Link from "next/link"
+import { logout } from "@src/lib/auth"
 
 export function NavUser({
   user
@@ -88,9 +89,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => logout().then(() => router.replace("/login"))}>
               <IconLogout />
-              <Link href="/admin/profil">Log out</Link>
+              <span>Log out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

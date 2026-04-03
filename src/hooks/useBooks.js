@@ -3,9 +3,23 @@
 import { socket } from "@src/lib/socketClient"
 import { useEffect, useState } from "react"
 
-export function useBooks(options = {}, endpoint = "/api/admin/books", searchTerm = "") {
+export function useBooks(
+  options = {}, 
+  endpoint = "/api/admin/books", 
+  searchTerm = ""
+) {
   const { limit } = options
 
+  const [sort, setSort] = useState({
+    field: "",
+    order: 1
+  })
+  const [filters, setFilters] = useState({
+    genre: "",
+    minPrice: 0,
+    maxPrice: 9999,
+    discount: "false"
+  });
   const [books, setBooks] = useState([])
   const [totalBooks, setTotalBooks] = useState(0)
 
@@ -22,6 +36,12 @@ export function useBooks(options = {}, endpoint = "/api/admin/books", searchTerm
       page,
       pageSize,
       search,
+      sortField: sort.field,
+      sortOrder: sort.order,
+      genre: filters.genre,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      discount: filters.discount,
       ...(limit ? { limit } : {}),
     })
 
@@ -52,7 +72,7 @@ export function useBooks(options = {}, endpoint = "/api/admin/books", searchTerm
 
   useEffect(() => {
     loadBooks()
-  }, [page, pageSize, search])
+  }, [page, pageSize, search, sort, filters])
 
   return {
     books,
@@ -67,6 +87,12 @@ export function useBooks(options = {}, endpoint = "/api/admin/books", searchTerm
 
     search,
     setSearch,
+
+    sort,
+    setSort,
+
+    filters,
+    setFilters,
 
     reload: loadBooks,
   }

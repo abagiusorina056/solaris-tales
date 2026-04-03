@@ -17,13 +17,19 @@ export async function PATCH(req) {
 
     global.io.emit("requestUpdated", { requestId, newStatus });
 
+    const subject = newStatus !== "approved" ? "Cerere respinsa" : "🎉 Felicitari! 🎉"
+    const content = newStatus !== "approved"
+      ? "Din pacate, cererea ta de publicare a fost respinsa."
+      : "Cererea ta de publicare a fost aprobata, iar acum ai titlul de autor. Te rugam sa ne contactezi pentru a putea publica impreuna prima ta carte."
+
     const adminId = await User.find({ role: "admin" }).distinct("_id");
     const newNotification = await Notification.create({
       senderId: adminId[0],
       recipientId: updatedRequest?.senderId,
       type: "system",
-      subject: "Carte stearsa",
-      content: `Cartea ta, ${book.title}, a fost stearsa de catre admin`,
+      subject: subject,
+      content: content,
+      referenceLink: "/profil"
     })
 
     global.io.emit("newNotification", newNotification)

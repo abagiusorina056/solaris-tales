@@ -8,10 +8,17 @@ export async function GET(req) {
 
   const search = searchParams.get("search") || ""
   const page = Number(searchParams.get("page") || 1)
+  const sortField = searchParams.get("sortField") || "createdAt";
+  const sortOrder = parseInt(searchParams.get("sortOrder")) || -1;
   const pageSize = Number(searchParams.get("pageSize") || 10) 
   const limit = 12
     
   const authors = await Author.aggregate([
+    {
+      $addFields: {
+        ratingNumeric: { $toDouble: { $ifNull: ["$rating", 0] } },
+      }
+    },
     {
       $lookup: {
         from: "users",
@@ -34,6 +41,11 @@ export async function GET(req) {
             ],
           }
         : {},
+    },
+    {
+      $sort: {
+        [sortField === "rating" ? "ratingNumeric" : sortField]: sortOrder
+      }
     },
     {
       $facet: {

@@ -46,7 +46,7 @@ const LayoutTwo = ({
             className='!w-2/3 aspect-[1/1.5] object-cover object-center cursor-pointer transition-all duration-300 ease-in-out hover:scale-105'
             alt={book?.title}
         />
-        <div className='flex flex-col items-center select-none' title={`${book.title} | ${book.author}`}>
+        <div className='flex flex-col items-center select-none'>
             <span
                 onClick={() => router.push(`/carte/${book._id}`)}
                 className='text-xl text-center mt-6'

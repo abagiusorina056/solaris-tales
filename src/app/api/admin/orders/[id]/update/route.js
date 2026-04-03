@@ -26,6 +26,7 @@ export async function PATCH(req, { params }) {
       type: "system",
       subject: "Comanda modificata",
       content: `Comanda ${updatedOrder?.slug} a fost modificata de catre admin`,
+      referenceLink: `/comanda/${updatedOrder.id}`
     })
 
     global.io.emit("newNotification", newNotification)

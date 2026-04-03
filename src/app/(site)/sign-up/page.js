@@ -210,7 +210,6 @@ const SignUp = () => {
 								<SelectContent>
 									<SelectItem value="male" className="text-xl!">Barbat</SelectItem>
 									<SelectItem value="female" className="text-xl!">Femeie</SelectItem>
-									<SelectItem value="walmart-bag" className="text-xl!">Altele (Bolnav mintal)</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>

@@ -6,6 +6,10 @@ import { useEffect, useState } from "react"
 export function useAuthors(options = {}, endpoint = "/api/admin/authors") {
   const { limit } = options
 
+  const [sort, setSort] = useState({
+    field: "",
+    order: 1
+  })
   const [authors, setAuthors] = useState([])
   const [totalAuthors, setTotalAuthors] = useState(0)
 
@@ -22,6 +26,8 @@ export function useAuthors(options = {}, endpoint = "/api/admin/authors") {
       page,
       pageSize,
       search,
+      sortField: sort.field,
+      sortOrder: sort.order,
       ...(limit ? { limit } : {})
     })
 
@@ -52,18 +58,25 @@ export function useAuthors(options = {}, endpoint = "/api/admin/authors") {
 
   useEffect(() => {
     loadAuthors()
-  }, [page, pageSize, search])
+  }, [page, pageSize, search, sort])
 
   return {
     authors,
     totalAuthors,
     loading,
+
     page,
     setPage,
+
     pageSize,
     setPageSize,
+
     search,
     setSearch,
+
+    sort,
+    setSort,
+
     reload: loadAuthors,
   }
 }

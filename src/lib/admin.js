@@ -1,6 +1,5 @@
 import { toast } from "sonner";
 import { uploadImage } from "./utils";
-import { id } from "zod/v4/locales";
 
 // constants
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

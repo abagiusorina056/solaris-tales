@@ -1,7 +1,6 @@
 import { IconStar } from '@tabler/icons-react';
 import React from 'react'
 import { CiDeliveryTruck, CiGift } from "react-icons/ci";
-import { PiShootingStar } from "react-icons/pi";
 
 const Benefits = () => {
   return (

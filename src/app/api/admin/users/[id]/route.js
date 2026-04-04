@@ -1,9 +1,14 @@
+import { ensureAdmin } from "@src/lib/auth-server";
 import { connectDB } from "@src/lib/mongodb"
 import { User } from "@src/models/User"
-import mongoose from "mongoose"
 
 export async function GET(req, { params }) {
   await connectDB()
+
+  const adminEnsurance = await ensureAdmin();
+  if (!adminEnsurance) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   const { id } = await params
     
@@ -20,6 +25,5 @@ export async function GET(req, { params }) {
 
   return Response.json({
     users: user || null,
-    // total: author[0]?.books[0]?.total || 0
   })
 }

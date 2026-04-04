@@ -1,11 +1,10 @@
 "use client"
 
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PageTitle from '@src/app/components/PageTitle';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -50,7 +49,7 @@ const BagView = () => {
   const handleClick = (bookId, action) => bagItem(bookId, user._id, action)
 
   useEffect(() => {
-    socket.on("bag", ({ newBagContent, newQuantities, newTotal }) => {
+    socket.on("bag", ({ newQuantities, newTotal }) => {
       invalidateUser()
       setProductQuantities(newQuantities)
       setTotal(parseFloat(newTotal))

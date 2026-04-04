@@ -8,14 +8,6 @@ export const useUser = (id = null, initialUser = null) => {
   const query = useQuery({
     queryKey: ['user'], 
     queryFn: async () => {
-      // const existingData = queryClient.getQueryData(['user']);
-      // const activeId = id || existingData?._id;
-
-      // if (!activeId) {
-      //   console.warn("useUser: No ID found for fetch");
-      //   return null;
-      // }
-
       const res = await fetch(`/api/me`);
       
       if (!res.ok) {
@@ -32,7 +24,6 @@ export const useUser = (id = null, initialUser = null) => {
     gcTime: 1000 * 60 * 60,
   })
 
-  // A helper to refresh this specific user's data
   const invalidateUser = () => {
     queryClient.invalidateQueries({ queryKey: ['user'] })
   }

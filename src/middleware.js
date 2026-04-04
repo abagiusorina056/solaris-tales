@@ -7,6 +7,13 @@ export function middleware(req) {
 
   const isLoggedIn = Boolean(userId);
 
+  if (pathname.startsWith("/publica-cu-noi")) {
+    if (isLoggedIn && role === "author") {
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
+    return NextResponse.next();
+  }
+
   if (pathname.startsWith("/admin")) {
     if (!isLoggedIn || role !== "admin") {
       return NextResponse.redirect(new URL("/unauthorized", req.url));

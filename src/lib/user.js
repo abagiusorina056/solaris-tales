@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { uploadDocument, uploadImage, uploadPdf } from "./utils"
+import { uploadImage, uploadPdf } from "./utils"
 
 export const updateProfilImage = async (img, userId) => {
   const uploadedUrl = await uploadImage(img)

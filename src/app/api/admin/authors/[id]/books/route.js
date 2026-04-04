@@ -1,9 +1,15 @@
+import { ensureAdmin } from "@src/lib/auth-server";
 import { connectDB } from "@src/lib/mongodb"
 import { Book } from "@src/models/Book"
 import mongoose from "mongoose"
 
 export async function GET(req, { params }) {
   await connectDB()
+
+  const adminEnsurance = await ensureAdmin();
+  if (!adminEnsurance) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   const { id } = await params
   const { searchParams } = new URL(req.url)

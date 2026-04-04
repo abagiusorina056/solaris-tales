@@ -29,17 +29,23 @@ import {
   CardTitle,
 } from "@src/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@src/components/ui/radio-group"
-import { IconArrowBarToRight, IconBuildingBank, IconCashBanknote, IconCheck, IconCopyPlusFilled, IconCreditCard, IconCubeSend, IconInfoCircle, IconMap2, IconPencil, IconSparkles2, IconStar } from '@tabler/icons-react'
-import { Input } from '@src/components/ui/input'
+import { 
+  IconCashBanknote, IconCheck, 
+  IconCreditCard, IconInfoCircle, 
+  IconPencil, IconStar 
+} from '@tabler/icons-react'
 import { Button } from '@src/components/ui/button'
 import { useUser } from '@src/hooks/useUser'
 import Image from 'next/image'
-import { cn, truncateText, validateOrderForm } from '@src/lib/utils'
+import { 
+  cn, 
+  truncateText, 
+  validateOrderForm 
+} from '@src/lib/utils'
 import { Separator } from '@src/components/ui/separator'
 import { Checkbox } from '@src/components/ui/checkbox'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { submitOrder } from '@src/lib/user'
-import { PiShootingStar } from 'react-icons/pi'
 
 const Checkout = () => {
   const { data: user } = useUser()

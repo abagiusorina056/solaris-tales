@@ -12,17 +12,14 @@ export async function GET(req) {
 
     await connectDB();
 
-    // Watch reviews
     StarReview.watch().on("change", (change) => {
       io.emit("reviews:update", change);
     });
 
-    // Watch users
     User.watch().on("change", (change) => {
       io.emit("users:update", change);
     });
 
-    // Watch books
     Book.watch().on("change", (change) => {
       io.emit("books:update", change);
     });

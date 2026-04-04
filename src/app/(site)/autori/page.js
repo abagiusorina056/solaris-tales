@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { 
+  useMemo, 
+  useRef, 
+  useState 
+} from "react";
 import { Button } from "@src/components/ui/button";
 import { Input } from "@src/components/ui/input";
 import {
   FaSearch,
   FaSortAmountDown,
-  FaInstagram,
   FaStar,
 } from "react-icons/fa";
 import {
@@ -19,21 +22,19 @@ import {
   PaginationEllipsis,
 } from "@src/components/ui/pagination";
 import { MdOutlineSearchOff } from "react-icons/md";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@src/components/ui/carousel";
 import Image from "next/image";
 import Link from "next/link";
-import { BsEnvelope } from "react-icons/bs";
-import { LuFacebook } from "react-icons/lu";
 import PageTitle from "../../components/PageTitle";
-import { useRouter } from "next/navigation";
 import authorDefaultImg from "@public/default-profile-pic.png"
-import { IconCheck, IconInfoCircle, IconLoader2, IconSortAZ, IconSortZA, IconStarFilled, IconStarHalfFilled } from "@tabler/icons-react";
+import { 
+  IconCheck, 
+  IconInfoCircle, 
+  IconLoader2, 
+  IconSortAZ, 
+  IconSortZA, 
+  IconStarFilled, 
+  IconStarHalfFilled 
+} from "@tabler/icons-react";
 import { useAuthors } from "@src/hooks/useAuthors";
 import AuthorsSkeleton from "@src/components/skeletons/site/AuthorsSkeleton";
 import {
@@ -89,8 +90,6 @@ const AuthorsView = () => {
     search,
     setSearch,
     setSort,
-    loading,
-    reload
   } = useAuthors({}, `/api/authors`)
   const ref = useRef(null)
   const totalPages = Math.ceil(totalAuthors / ITEMS_PER_PAGE);
@@ -189,7 +188,6 @@ const AuthorsView = () => {
             <div className="w-full flex gap-2 mt-12">
               <DialogClose
                 onClick={() => {
-                  // setCurrentSorting({})
                   setSortDialog(false)
                   setSort({
                     field: "",
@@ -277,7 +275,6 @@ const AuthorsView = () => {
 };
 
 const AuthorCard = ({ author }) => {
-  const router = useRouter()
   const authorNameSplit = author.name.split(" ")
   const authorFirstName = authorNameSplit[0]
   const authorLastName = authorNameSplit.slice(1, authorNameSplit.length)

@@ -3,7 +3,6 @@ import { connectDB } from "@src/lib/mongodb";
 import { User } from "@src/models/User";
 const bcrypt = require('bcrypt');
 
-// create a new user
 export async function POST(req) {
   try {
     await connectDB();
@@ -42,7 +41,7 @@ export async function POST(req) {
       httpOnly: true,
       sameSite: "lax",
       path: "/",
-      ...(rememberMe && { maxAge: 60 * 60 * 24 * 30 }), // 30 days
+      ...(rememberMe && { maxAge: 60 * 60 * 24 * 30 }),
     };
 
     res.cookies.set("user_id", user._id.toString(), cookieOptions);

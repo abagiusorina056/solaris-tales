@@ -24,7 +24,6 @@ export const useAdmin = (initialAdmin = null) => {
     gcTime: 1000 * 60 * 60,
   })
 
-  // A helper to refresh this specific user's data
   const invalidateAdmin = () => {
     queryClient.invalidateQueries({ queryKey: ['admin'] })
   }

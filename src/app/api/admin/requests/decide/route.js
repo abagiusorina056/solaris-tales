@@ -3,10 +3,16 @@ import { connectDB } from "@src/lib/mongodb";
 import { PublishRequest } from "@src/models/PublishRequest";
 import { User } from "@src/models/User";
 import { Notification } from "@src/models/Notification";
+import { ensureAdmin } from "@src/lib/auth-server";
 
 export async function PATCH(req) {
   try {
     await connectDB();
+
+    const adminEnsurance = await ensureAdmin();
+    if (!adminEnsurance) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     
     const { requestId, newStatus } = await req.json()
 

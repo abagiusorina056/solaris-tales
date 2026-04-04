@@ -14,8 +14,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@src/components/ui/command"
 import {
   Pagination,
@@ -41,14 +39,18 @@ import { Slider } from "@src/components/ui/slider"
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@src/components/ui/select";
 import { useUser } from "@src/hooks/useUser";
 import { useBooks } from "@src/hooks/useBooks";
-import { IconCalendarDown, IconCalendarUp, IconCashBanknoteMove, IconCashBanknoteMoveBack, IconCheck, IconLoader2, IconSortAZ, IconSortZA, IconStar, IconStarFilled, IconStarHalfFilled } from "@tabler/icons-react";
+import { 
+  IconCalendarDown, IconCalendarUp, 
+  IconCashBanknoteMove, IconCashBanknoteMoveBack, 
+  IconCheck, IconLoader2, IconSortAZ, 
+  IconSortZA, IconStarFilled, IconStarHalfFilled 
+} from "@tabler/icons-react";
 import BooksSkeleton from "@src/components/skeletons/site/BooksSkeleton";
 import { useSearchParams } from "next/navigation";
 import { Separator } from "@src/components/ui/separator";
@@ -116,7 +118,7 @@ const sortingOptions = [
 ]
 
 const BooksView = () => {
-  const { data: user, invalidateUser } = useUser()
+  const { data: user } = useUser()
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("term");
   const { 
@@ -128,9 +130,6 @@ const BooksView = () => {
     setSearch,
     setSort,
     setFilters,
-    pageSize,
-    loading,
-    reload
   } = useBooks({},  "/api/books", searchTerm || "")
   const ref = useRef(null)
   const totalPages = Math.ceil(totalBooks / ITEMS_PER_PAGE)
@@ -301,7 +300,7 @@ const BooksView = () => {
                     id="genre"
                     name="genre"
                     onClick={() => setGenreDialog(true)}
-                    value={genres.genres.find(g => g.slug === currentFiltering?.genre).label || ""}
+                    value={genres.genres.find(g => g.slug === currentFiltering?.genre)?.label || ""}
                     onChange={() => {}}
                     className="bg-white py-6 !text-xl"
                   />
@@ -363,7 +362,6 @@ const BooksView = () => {
             <div className="flex items-center gap-3">
               <DialogClose
                 onClick={() => {
-                  // setCurrentFiltering({})
                   setFilterDialog(false)
                   setFilters({
                     genre: "",
@@ -423,7 +421,6 @@ const BooksView = () => {
             <div className="w-full flex gap-2 mt-12">
               <DialogClose
                 onClick={() => {
-                  // setCurrentSorting({})
                   setSortDialog(false)
                   setSort({
                     field: "",

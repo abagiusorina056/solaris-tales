@@ -13,20 +13,24 @@ import {
   IconMars, IconVenus, IconCake, 
   IconBrandInstagram, IconBrandFacebook, IconBlockquote, 
   IconPencil, IconTrash, IconExternalLink, IconClipboard, 
-  IconCheck, IconPencilCancel, 
-  IconPlus,
-  IconLoader2,
-  IconUpload
+  IconCheck, IconPencilCancel, IconLoader2,
 } from "@tabler/icons-react"
 import { BsEnvelope } from "react-icons/bs"
 import Image from "next/image"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
+import { 
+  Dialog, 
+  DialogClose, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@src/components/ui/dialog"
 import { FaInstagram } from "react-icons/fa"
 import { LuFacebook } from "react-icons/lu"
 import { deleteUser, removeImage, updateUser } from "@src/lib/admin"
 import { toast } from "sonner"
-import ImageDropzone from "@src/app/components/ImageDropzone";
-import { updateProfilImage } from "@src/lib/user";
 import { socket } from "@src/lib/socketClient";
 
 const UserAuthorCard = ({ user, slug, reload }) => {

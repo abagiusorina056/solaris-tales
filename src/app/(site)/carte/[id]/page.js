@@ -1,12 +1,24 @@
-import { cookies } from "next/headers";
 import { connectDB } from "@src/lib/mongodb";
-import { Book } from "@src/models/Book";
 import BookView from "./BookView";
-import { StarReview } from "@src/models/StarReview";
-import { User } from "@src/models/User";
+import { Book } from "@src/models/Book";
+import mongoose from "mongoose";
+import { notFound } from "next/navigation";
 
 const BookPage = async ({ params }) => {
   const { id } = await params
+
+  const isValidId = mongoose.Types.ObjectId.isValid(id);
+
+  if (!isValidId) {
+    return notFound(); 
+  }
+
+  await connectDB()
+  const exists = await Book.exists({ _id: id })
+  
+  if (!exists) {
+    return notFound()
+  }
 
   return (
     <BookView id={id} />

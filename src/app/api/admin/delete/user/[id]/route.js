@@ -3,10 +3,16 @@ import { connectDB } from "@src/lib/mongodb";
 import { User } from "@src/models/User";
 import cloudinary from "@src/lib/cloudinary";
 import { getCloudinaryPublicId } from "@src/lib/utils";
+import { ensureAdmin } from "@src/lib/auth-server";
 
 export async function DELETE(req, { params }) {
   try {
     await connectDB();
+
+    const adminEnsurance = await ensureAdmin();
+    if (!adminEnsurance) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     
     const { id } = await params
 

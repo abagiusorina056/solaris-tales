@@ -1,8 +1,6 @@
 import "server-only"
 import { connectDB } from "@src/lib/mongodb";
-import { User } from "@src/models/User";
 import mongoose from "mongoose";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server"
 import { Author } from "@src/models/Authors";
 

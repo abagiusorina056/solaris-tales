@@ -1,7 +1,5 @@
 
 import ShellWrapper from './ShellWrapper';
-import { getUser } from '@src/lib/utils';
-import { UserProvider } from '@src/hooks/useUser';
 import { cookies } from 'next/headers';
 import QueryProvider from '@src/providers/QueryProvider';
 import { getInitialUser } from '@src/lib/me';

@@ -12,29 +12,29 @@ import {
   IconX, IconSignature, IconPhone, 
   IconMars, IconVenus, IconCake, 
   IconBrandInstagram, IconBrandFacebook, IconBlockquote, 
-  IconPencil, IconTrash, IconExternalLink, IconClipboard, 
-  IconCheck, IconPencilCancel, 
-  IconPlus,
-  IconLoader2,
-  IconCalendarWeek,
-  IconFileDigitFilled,
-  IconUpload,
+  IconPencil, IconExternalLink,  IconPencilCancel, 
+  IconLoader2, IconCalendarWeek, IconUpload,
 } from "@tabler/icons-react"
 import { BsEnvelope } from "react-icons/bs"
 import Image from "next/image"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
-import { FaInstagram, FaRegCalendar } from "react-icons/fa"
+import { 
+  Dialog, 
+  DialogClose, 
+  DialogContent, 
+  DialogDescription,
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@src/components/ui/dialog"
+import { FaInstagram } from "react-icons/fa"
 import { LuFacebook } from "react-icons/lu"
-import { deleteUser, updateUser } from "@src/lib/admin"
-import { toast } from "sonner"
-import { useUser } from "@src/hooks/useUser";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@src/components/ui/input-group";
 import { removeImage, updateProfile, updateProfilImage } from "@src/lib/user";
 import { validateUpdateProfileForm } from "@src/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@src/components/ui/popover";
 import { Calendar } from "@src/components/ui/calendar";
 import { socket } from "@src/lib/socketClient";
-import { useRouter } from "next/navigation";
 import { useAdmin } from "@src/hooks/useAdmin";
 import ImageDropzone from "@src/app/components/ImageDropzone";
 
@@ -142,7 +142,6 @@ const Profile = () => {
                         isAdmin
                         onFileSelect={(f) => {
                           setFile(f);
-                          // setPreview(URL.createObjectURL(f));
                         }}
                         setProfilImage={handleChangeProfilePic}
                       />

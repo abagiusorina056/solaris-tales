@@ -1,3 +1,4 @@
+import { ensureAdmin } from "@src/lib/auth-server";
 import cloudinary from "@src/lib/cloudinary";
 import { connectDB } from "@src/lib/mongodb";
 import { getCloudinaryPublicId } from "@src/lib/utils";
@@ -8,6 +9,11 @@ import { NextResponse } from "next/server";
 export async function PATCH(req, { params }) {
   try {
     await connectDB();
+
+    const adminEnsurance = await ensureAdmin();
+    if (!adminEnsurance) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
     const { id } = await params
     const { image } = await req.json();

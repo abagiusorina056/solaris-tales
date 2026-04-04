@@ -1,10 +1,23 @@
 import Image from "next/image"
-import { IconCircleDashed, IconPointFilled, IconStarFilled, IconTrash } from "@tabler/icons-react"
+import { 
+  IconCircleDashed, 
+  IconStarFilled, 
+  IconTrash 
+} from "@tabler/icons-react"
 import { Button } from "@src/components/ui/button"
 import defaultProfilePic from "@public/default-profile-pic.png"
 import Link from "next/link"
 import { format } from "date-fns"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
+import { 
+  Dialog, 
+  DialogClose, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@src/components/ui/dialog"
 import { deleteAuthor } from "@src/lib/admin"
 
 export function authorColumns(handleDelete) {

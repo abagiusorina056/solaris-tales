@@ -1,22 +1,32 @@
 "use client"
 
-import { DataTable } from '@src/components/data-table'
-import { reviewColumns } from '@src/components/data-table/columns/reviews-columns'
 import defaultBookPic from "@public/default-book-pic.jpg";
 import { Separator } from '@src/components/ui/separator'
-import { adaptReviews } from '@src/lib/table-adapters'
-import { averageReview, cn } from '@src/lib/utils'
+import { cn } from '@src/lib/utils'
 import { format } from 'date-fns'
 import { ro } from 'date-fns/locale'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa'
-import { useAdmin } from '../../AdminContext'
-import { IconArrowNarrowRightDashed, IconArticle, IconBlockquote, IconCurrencyDollar, IconLoader2, IconPencil, IconPercentage, IconRotate, IconRotateRectangle, IconSubtitlesEdit, IconTrash, IconX } from '@tabler/icons-react'
+import { 
+  IconArrowNarrowRightDashed, IconArticle, 
+  IconBlockquote, IconCurrencyDollar, 
+  IconLoader2, IconPencil, 
+  IconPercentage, IconRotate,
+  IconSubtitlesEdit, IconTrash, IconX 
+} from '@tabler/icons-react'
 import { useBooks } from '@src/hooks/useBooks'
 import ReviewsTab from '@src/components/data-table/tabs/ReviewsTab'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
+import { 
+  Dialog, 
+  DialogClose, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@src/components/ui/dialog"
 import { Input } from '@src/components/ui/input'
 import { Button } from '@src/components/ui/button'
 import { Textarea } from '@src/components/ui/textarea'

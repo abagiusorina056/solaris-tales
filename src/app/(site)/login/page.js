@@ -12,7 +12,6 @@ import { LuEye, LuEyeOff } from "react-icons/lu";
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { validateLoginForm } from '@src/lib/utils'
 import { login } from '@src/lib/auth'
-import { useUser } from '@src/hooks/useUser'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 

@@ -35,7 +35,7 @@ const ImageDropzone = ({
     setCropAreaPixels(pixels);
   };
 
-  // ========= FILE HANDLING =========
+  // file handling
   const handleFiles = (files) => {
     const file = files?.[0];
     if (!file) return;
@@ -58,7 +58,7 @@ const ImageDropzone = ({
     onFileSelect?.(file);
   };
 
-  // ========= SAVE CROP (IMAGES ONLY) =========
+  // save crop
   const saveCroppedImage = async () => {
     if (!preview || preview.type !== "image") return;
 
@@ -93,7 +93,7 @@ const ImageDropzone = ({
     }
   };
 
-  // ========= CONFIRM =========
+  // confirm
   const handleConfirm = async () => {
     setIsConfirmDisabled(true);
     setIsSavingCrop()
@@ -104,12 +104,11 @@ const ImageDropzone = ({
         setProfilImage?.(croppedFile);
       }
     } else {
-      // PDF or normal image (no crop)
       setProfilImage?.();
     }
   };
 
-  // ========= REMOVE =========
+  // remove
   const removeFile = () => {
     setPreview(null);
     onFileSelect?.(null);
@@ -150,7 +149,7 @@ const ImageDropzone = ({
           </button>
         )}
 
-        {/* ========= IMAGE + CROP ========= */}
+        {/* // image crop */}
         {preview?.type === "image" && isNewProfilePic ? (
           <div className="relative w-72 h-72 rounded-full overflow-hidden">
             <Cropper
@@ -175,7 +174,6 @@ const ImageDropzone = ({
           />
         ) : preview?.type === "pdf" ? (
           <div className="flex flex-col items-center gap-4">
-            {/* <FaRegFilePdf size={96} className="text-red-500" /> */}
             <iframe
               src={preview.url}
               className="w-full h-120 rounded-lg border"
@@ -194,7 +192,7 @@ const ImageDropzone = ({
           </div>
         )}
 
-        {/* SAVE CROP */}
+        {/* save crop */}
         {preview?.type === "image" && isNewProfilePic && (
           <Button
             disabled={isSavingCrop}
@@ -217,7 +215,7 @@ const ImageDropzone = ({
         />
       </div>
 
-      {/* CONFIRM */}
+      {/* confirm */}
       {isNewProfilePic && !hideConfirmButton && (
         <Button
           disabled={isConfirmDisabled}

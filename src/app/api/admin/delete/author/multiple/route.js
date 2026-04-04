@@ -4,10 +4,16 @@ import cloudinary from "@src/lib/cloudinary";
 import { getCloudinaryPublicId } from "@src/lib/utils";
 import mongoose from "mongoose";
 import { Author } from "@src/models/Authors";
+import { ensureAdmin } from "@src/lib/auth-server";
 
 export async function DELETE(req) {
   try {
     await connectDB();
+
+    const adminEnsurance = await ensureAdmin();
+    if (!adminEnsurance) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     
     const { ids } = await res.json()
 

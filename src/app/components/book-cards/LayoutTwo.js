@@ -1,6 +1,10 @@
 import React, { useRef, useState } from 'react'
 import Image from 'next/image'
-import { averageReview, cn, truncateText } from '@src/lib/utils'
+import { 
+    averageReview, 
+    cn, 
+    truncateText 
+} from '@src/lib/utils'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import StarReviewComponent from '@src/app/(site)/carte/[id]/StarReviewComponent'
 import { useRouter } from 'next/navigation'

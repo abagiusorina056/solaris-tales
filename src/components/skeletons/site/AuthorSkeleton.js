@@ -1,10 +1,6 @@
-import { Button } from '@src/components/ui/button'
-import { Input } from '@src/components/ui/input'
 import { Separator } from '@src/components/ui/separator'
 import { Skeleton } from '@src/components/ui/skeleton'
-import { IconLoader2 } from '@tabler/icons-react'
 import React from 'react'
-import { FaSearch, FaSortAmountDown } from 'react-icons/fa'
 import BooksSkeleton from './BooksSkeleton'
 
 const AuthorSkeleton = () => {

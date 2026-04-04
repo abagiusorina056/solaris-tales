@@ -1,8 +1,14 @@
+import { ensureAdmin } from "@src/lib/auth-server";
 import { connectDB } from "@src/lib/mongodb"
 import { StarReview } from "@src/models/StarReview"
 
 export async function GET(req) {
   await connectDB()
+
+  const adminEnsurance = await ensureAdmin();
+  if (!adminEnsurance) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   const { searchParams } = new URL(req.url)
 
@@ -10,17 +16,7 @@ export async function GET(req) {
   const page = Number(searchParams.get("page") || 1)
   const pageSize = Number(searchParams.get("pageSize") || 10)
 
-  const skip = (page - 1) * pageSize
   const limit = pageSize
-
-  const query = search
-    ? {
-        $or: [
-          { name: { $regex: search, $options: "i" } },
-          { "user.email": { $regex: search, $options: "i" } },
-        ],
-      }
-    : {}
     
   const reviews = await StarReview.aggregate([
     {

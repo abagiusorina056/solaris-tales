@@ -2,7 +2,12 @@
 
 import { Separator } from '@src/components/ui/separator'
 import React, { useEffect, useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@src/components/ui/tabs'
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from '@src/components/ui/tabs'
 import UserAuthorCard from '../../UserAuthorCard'
 import { useAuthors } from '@src/hooks/useAuthors'
 import BooksTab from '@src/components/data-table/tabs/BooksTab'

@@ -1,12 +1,10 @@
 import { DataTable } from '@src/components/data-table'
-import { useBooks } from '@src/hooks/useBooks'
 import React from 'react'
-import { bookColumns } from '../columns/book-columns'
-import { adaptBooks, adaptOrders } from '@src/lib/table-adapters'
+import { adaptOrders } from '@src/lib/table-adapters'
 import { useOrders } from '@src/hooks/useOrders'
 import { ordersColumns } from '../columns/order-columns'
 
-const OrdersTab = ({ endpoint, children, isAuthorActive = true }) => {
+const OrdersTab = ({ endpoint, children }) => {
   const {
     orders,
     totalOrders,

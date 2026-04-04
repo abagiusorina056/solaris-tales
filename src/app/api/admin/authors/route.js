@@ -10,7 +10,6 @@ export async function GET(req) {
   const page = Number(searchParams.get("page") || 1)
   const pageSize = Number(searchParams.get("pageSize") || 10) 
   const limit = Number(searchParams.get("limit") || pageSize)
-  // const limit = pageSize
     
   const authors = await Author.aggregate([
     {

@@ -1,7 +1,13 @@
+import { ensureAdmin } from "@src/lib/auth-server";
 import cloudinary from "@src/lib/cloudinary";
 
 export async function POST(req) {
   try {
+    const adminEnsurance = await ensureAdmin();
+    if (!adminEnsurance) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const form = await req.formData();
     const img = form.get("file");
 

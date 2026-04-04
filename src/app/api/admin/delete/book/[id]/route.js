@@ -4,10 +4,16 @@ import { Book } from "@src/models/Book"
 import cloudinary from "@src/lib/cloudinary";
 import { Author } from "@src/models/Authors";
 import { User } from "@src/models/User";
+import { ensureAdmin } from "@src/lib/auth-server";
 
 export async function DELETE(req, { params }) {
   try {
     await connectDB();
+
+    const adminEnsurance = await ensureAdmin();
+    if (!adminEnsurance) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     
     const { id } = await params
 

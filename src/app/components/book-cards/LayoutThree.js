@@ -2,7 +2,6 @@ import React from 'react'
 
 import lotr from '@public/mockup-books/lotr1.jpeg'
 import Image from 'next/image'
-import { FaHeartBroken } from "react-icons/fa";
 import { Button } from '@src/components/ui/button';
 import { truncateText } from '@src/lib/utils';
 import Link from 'next/link';

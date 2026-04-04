@@ -1,12 +1,10 @@
 "use client"
-import { useUser } from "@src/hooks/useUser";
 import { createContext, useContext } from "react";
 
 const AdminContext = createContext(null);
 
 export const AdminProvider = ({ admin, children }) => {
   const { data: user } = useAdmin(admin?._id, admin);
-  console.log(user)
 
   return (
     <AdminContext.Provider value={{ admin }}>

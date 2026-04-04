@@ -2,10 +2,23 @@
 
 import Link from "next/link"
 import { Button } from "@src/components/ui/button"
-import { IconTrash, IconEye, IconCircleDashed } from "@tabler/icons-react"
+import { 
+  IconTrash, 
+  IconEye, 
+  IconCircleDashed 
+} from "@tabler/icons-react"
 import Image from "next/image"
 import { format } from "date-fns"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
+import { 
+  Dialog, 
+  DialogClose, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@src/components/ui/dialog"
 import { deleteBook } from "@src/lib/admin"
 import { genres } from "@src/lib/genres"
 

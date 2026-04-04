@@ -20,7 +20,6 @@ const Unsubscribe = () => {
           <span>Intoarce-te la pagina</span>
           <Link href="/">
             <span className='text-[var(--color-primary)] font-semibold'>pagina principala</span>
-            
           </Link>
         </p>
       </div>

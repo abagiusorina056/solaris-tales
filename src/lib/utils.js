@@ -227,22 +227,6 @@ export const averageReview = (reviews) => {
   return roundToHalf(average)
 }
 
-// export const groupReviewsByBookId = (everyReview) => {
-//   const reviewMap = {};
-
-//   everyReview.forEach(r => {
-//     const bookId = r.bookId;
-
-//     if (!reviewMap[bookId]) {
-//       reviewMap[bookId] = [];
-//     }
-
-//     reviewMap[bookId].push(r);
-//   });
-
-//   return reviewMap
-// }
-
 export const calculateProcess = (allReviewsLength, reviewTotal) => (100 * reviewTotal) / allReviewsLength
 
 export const buildPercentages = (allReviews) => {

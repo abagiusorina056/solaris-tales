@@ -3,10 +3,16 @@ import { connectDB } from "@src/lib/mongodb";
 import { Author } from "@src/models/Authors";
 import { User } from "@src/models/User";
 import cloudinary from "@src/lib/cloudinary";
+import { ensureAdmin } from "@src/lib/auth-server";
 
 export async function POST(req) {
   try {
     await connectDB();
+
+    const adminEnsurance = await ensureAdmin();
+    if (!adminEnsurance) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     
     const formData = await req.formData();
 

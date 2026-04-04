@@ -1,7 +1,12 @@
 import React from 'react'
 import { Progress } from '@src/components/ui/progress'
 import StarReviewComponent from './StarReviewComponent'
-import { averageReview, buildPercentages, calculateProcess, cn } from '@src/lib/utils'
+import { 
+  averageReview, 
+  buildPercentages, 
+  calculateProcess, 
+  cn 
+} from '@src/lib/utils'
 import { Separator } from '@src/components/ui/separator'
 
 const ReviewsComponent = ({ allStarReviews }) => {
@@ -21,7 +26,7 @@ const ReviewsComponent = ({ allStarReviews }) => {
             >
               {averageOfReviews || <p>Nu exista recenzii</p>}
             </span>
-            {averageOfReviews && <StarReviewComponent review={averageOfReviews} size={24} />}
+            {averageOfReviews !== NaN && <StarReviewComponent review={averageOfReviews} size={24} />}
             <span className="text-2xl font-light">({allStarReviews.length} {allStarReviews.length === 1 ? "recenzie": "recenzii"})</span>
           </div>
           <div className='flex flex-col-reverse gap-2 flex-4/5'>

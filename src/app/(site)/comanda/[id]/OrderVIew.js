@@ -2,16 +2,34 @@
 
 import PageTitle from '@src/app/components/PageTitle'
 import { Button } from '@src/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@src/components/ui/card'
+import { 
+  Card, 
+  CardContent, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from '@src/components/ui/card'
 import { Separator } from '@src/components/ui/separator'
 import { useOrders } from '@src/hooks/useOrders'
 import { useUser } from '@src/hooks/useUser'
 import { truncateText } from '@src/lib/utils'
-import { IconBuildingBank, IconCashBanknote, IconCheck, IconClipboard, IconCreditCard, IconLoader2, IconStar } from '@tabler/icons-react'
+import { 
+  IconCashBanknote, IconCheck, 
+  IconClipboard, IconCreditCard, 
+  IconLoader2 
+} from '@tabler/icons-react'
 import Image from 'next/image'
 import React from 'react'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
-import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { 
+  Dialog, 
+  DialogClose, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle,
+   DialogTrigger 
+} from "@src/components/ui/dialog"
 import OrderSkeleton from '@src/components/skeletons/OrderSkeleton'
 
 const OrderView = ({ id }) => {

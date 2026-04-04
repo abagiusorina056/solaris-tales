@@ -4,9 +4,8 @@ import Image from 'next/image'
 import React, { useEffect, useRef, useState } from 'react'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import { format } from 'date-fns'
-import sorina from "@public/mockup-staff/sorina.png";
 import { ro } from 'date-fns/locale'
-import { starReviewBook, startReviewBook } from '@src/lib/book'
+import { starReviewBook } from '@src/lib/book'
 import StarReviewComponent from './StarReviewComponent'
 import ReviewsComponent from './ReviewsComponent'
 import { BsBagPlusFill } from 'react-icons/bs'
@@ -26,7 +25,6 @@ const BookView = ({ id }) => {
   const { books: book } = useBooks({}, `/api/books/${id}`)
   const [allReviews, setAllReviews] = useState([])
   const [authorRating, setAuthorRating] = useState("")
-
 
   useEffect(() => {
     socket.on("new-review", (data) => {
@@ -90,8 +88,12 @@ const BookView = ({ id }) => {
         <div className='flex items-baseline justify-between mb-12'>
           <div className='flex items-baseline text-4xl'>
             <span className='mr-2'>Despre</span>
-            {book.author && <span className='font-extrabold'>{book?.author?.name}</span>}
-            <span>:</span>
+            {book.author && (
+              <Link href={`/autor/${book.author._id}`}>
+                <span className='font-extrabold hover:underline'>{book?.author?.name}</span>
+              </Link>
+            )}
+          <span>:</span>
           </div>
           <div className='text-[var(--color-primary)] font-bold text-2xl'>
             Rating {authorRating} / 5

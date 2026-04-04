@@ -1,3 +1,4 @@
+import { ensureAdmin } from "@src/lib/auth-server";
 import { connectDB } from "@src/lib/mongodb";
 import { Author } from "@src/models/Authors";
 import { Notification } from "@src/models/Notification";
@@ -7,6 +8,11 @@ import { NextResponse } from "next/server";
 export async function PATCH(req, { params }) {
   try {
     await connectDB();
+
+    const adminEnsurance = await ensureAdmin();
+    if (!adminEnsurance) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
     const { id } = await params
     const { userData } = await req.json();

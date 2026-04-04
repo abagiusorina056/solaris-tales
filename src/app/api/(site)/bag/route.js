@@ -40,7 +40,7 @@ export async function PATCH(req) {
       user.bagProducts.splice(index, 1);
     }
 
-    await user.save(); // REQUIRED
+    await user.save();
     const productIds = await (user?.bagProducts || []).map(item => item.productId);
     const quantities = {};
     (user?.bagProducts || []).forEach(item => {
@@ -55,7 +55,6 @@ export async function PATCH(req) {
     }, 0);
 
     global.io.emit("bag", { 
-      newBagContent: bagContent, 
       newQuantities: quantities,
       newTotal: total
     });

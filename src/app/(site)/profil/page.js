@@ -6,12 +6,11 @@ import defaultProfilPic from "@public/default-profile-pic.png";
 import Image from "next/image";
 import { LiaEdit } from "react-icons/lia";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { MdEdit, MdLogout } from "react-icons/md";
+import { MdLogout } from "react-icons/md";
 import LayoutThree from "@src/app/components/book-cards/LayoutThree";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -35,27 +34,52 @@ import {
 import { Button } from "@src/components/ui/button";
 import { logout } from "@src/lib/auth";
 import ImageDropzone from "@src/app/components/ImageDropzone";
-import { removeImage, updateProfile, updateProfilImage } from "@src/lib/user";
+import { 
+  removeImage, 
+  updateProfile, 
+  updateProfilImage 
+} from "@src/lib/user";
 import { useRouter } from "next/navigation";
 import { Input } from "@src/components/ui/input";
-import { FaInstagram, FaPhoneAlt, FaRegCalendar, FaSearch } from "react-icons/fa";
+import { 
+  FaInstagram, FaPhoneAlt, 
+  FaRegCalendar, FaSearch 
+} from "react-icons/fa";
 import { LuFacebook } from "react-icons/lu";
 import { BsEnvelope } from "react-icons/bs";
 import { CgFormatLeft } from "react-icons/cg";
 import { Textarea } from "@src/components/ui/textarea";
 import { Label } from "@src/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@src/components/ui/popover";
+import { 
+  Popover, 
+  PopoverContent, 
+  PopoverTrigger 
+} from "@src/components/ui/popover";
 import { Calendar } from "@src/components/ui/calendar";
 import { ro } from "date-fns/locale";
 import { format } from "date-fns";
-import { cn, orderStatusMap, truncateText, validateUpdateProfileForm } from "@src/lib/utils";
+import { 
+  cn, 
+  orderStatusMap, 
+  truncateText, 
+  validateUpdateProfileForm 
+} from "@src/lib/utils";
 import { socket } from "@src/lib/socketClient";
 import { useUser } from "@src/hooks/useUser";
-import { IconHeartX, IconLoader2, IconRotate, IconStar, IconTruckDelivery, IconUpload, IconX } from "@tabler/icons-react";
+import { 
+  IconHeartX, IconLoader2, 
+  IconRotate, IconStar, 
+  IconTruckDelivery, IconUpload, 
+  IconX 
+} from "@tabler/icons-react";
 import { Separator } from "@src/components/ui/separator";
 import Link from "next/link";
 import ProfileSkeleton from "@src/components/skeletons/site/ProfileSkeleton";
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@src/components/ui/input-group";
+import { 
+  InputGroup, 
+  InputGroupAddon, 
+  InputGroupInput 
+} from "@src/components/ui/input-group";
 import { useQueryClient } from "@tanstack/react-query";
 
 const UserView = () => {
@@ -88,7 +112,7 @@ const UserView = () => {
   };
 
   useEffect(() => {
-    socket.on("userUpdated", (updatedUser) => {
+    socket.on("userUpdated", () => {
       invalidateUser()
     })
 
@@ -406,7 +430,6 @@ const UserCard = ({ user }) => {
                     isAdmin
                     onFileSelect={(f) => {
                       setFile(f);
-                      // setPreview(URL.createObjectURL(f));
                     }}
                     setProfilImage={handleChangeProfilePic}
                   />

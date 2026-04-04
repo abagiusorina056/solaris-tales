@@ -1,21 +1,44 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@src/components/ui/card";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@src/components/ui/dialog";
+import { 
+  Card, 
+  CardContent, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@src/components/ui/card";
 import { Badge } from '@src/components/ui/badge';
-import { IconBell, IconBellX, IconChecks, IconLoader2 } from '@tabler/icons-react';
+import { 
+  IconBell, IconBellX, 
+  IconChecks, IconLoader2 
+} from '@tabler/icons-react';
 import { Label } from '@src/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@src/components/ui/select';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@src/components/ui/select';
 import { Button } from '@src/components/ui/button';
 import Link from 'next/link';
-import { useUser } from '@src/hooks/useUser';
 import { formatDistanceToNow } from 'date-fns';
 import { ro } from 'date-fns/locale';
 import { cn } from '@src/lib/utils';
 import defaultProfilPic from "@public/default-profile-pic.png";
 import Image from 'next/image';
 import { socket } from '@src/lib/socketClient';
-import { markMultipleNotificationsAsRead, markNotificationAsRead } from '@src/lib/user';
-import { useAdmin } from '@src/hooks/useAdmin';
+import { 
+  markMultipleNotificationsAsRead, 
+  markNotificationAsRead 
+} from '@src/lib/user';
 
 const NotificationsDialog = ({ user, invalidate, isDashboard = false}) => {
   const isAdmin = user?.role === "admin"

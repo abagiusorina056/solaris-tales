@@ -4,7 +4,6 @@ import { connectDB } from "@src/lib/mongodb";
 import { Author } from "@src/models/Authors";
 import { Book } from "@src/models/Book";
 import { StarReview } from "@src/models/StarReview";
-import { User } from "@src/models/User";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
@@ -15,10 +14,8 @@ export async function PATCH(req, { params }) {
     const { id } = await params;
     const { review, reviewerId, authorId } = await req.json();
 
-    // 1. Find the existing review to get the OLD score
     const existingReview = await StarReview.findOne({ bookId: id, reviewerId }).lean();
   
-    // 2. Upsert the review (Update if exists, Create if not)
     const newReview = await StarReview.findOneAndUpdate(
       { bookId: id, reviewerId },
       { bookId: id, reviewerId, review },

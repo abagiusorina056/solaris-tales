@@ -4,16 +4,22 @@ import React, { useEffect, useState } from "react";
 import logo from "@public/logo.png";
 import Image from "next/image";
 import Link from "next/link";
-import { FaRegHeart, FaRegUser, FaSearch } from "react-icons/fa";
+import { 
+	FaRegHeart, 
+	FaRegUser, 
+	FaSearch 
+} from "react-icons/fa";
 import { Input } from "@src/components/ui/input";
 import { Badge } from "@src/components/ui/badge";
 import { BsBagFill, BsBagPlusFill } from "react-icons/bs";
 import { socket } from "@src/lib/socketClient";
 import { cn, truncateText } from "@src/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@src/components/ui/popover";
+import { 
+	Popover, 
+	PopoverContent, 
+	PopoverTrigger 
+} from "@src/components/ui/popover";
 import { Button } from "@src/components/ui/button";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { IoNotificationsOutline } from "react-icons/io5";
 import { useUser } from "@src/hooks/useUser";
 import { IconDashboard, IconLoader2 } from "@tabler/icons-react";
 import { Separator } from "@src/components/ui/separator";
@@ -65,10 +71,10 @@ const Navbar = () => {
 	}
 
 	useEffect(() => {
-		socket.on("favorite", ({ favorites, bookId }) => {
+		socket.on("favorite", () => {
 			invalidateUser()
 		});
-		socket.on("bag", ({ newBagContent, newQuantities}) => {
+		socket.on("bag", () => {
 			invalidateUser()
 		});
 		socket.on("order-placed", () => invalidateUser())

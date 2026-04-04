@@ -1,10 +1,9 @@
 "use client";
 
-import { Badge } from "@src/components/ui/badge";
-import { Button } from "@src/components/ui/button";
-import { createAuthor, decideOnPublishRequest } from "@src/lib/admin";
-import { cn, orderStatusMap, truncateText } from "@src/lib/utils";
-import { IconFileTypePdf, IconCheck, IconX } from "@tabler/icons-react";
+import { 
+  orderStatusMap, 
+  truncateText 
+} from "@src/lib/utils";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +12,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@src/components/ui/select"

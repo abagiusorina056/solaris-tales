@@ -2,7 +2,7 @@ import { connectDB } from "@src/lib/mongodb";
 import { Book } from "@src/models/Book";
 import mongoose from "mongoose";
 
-export async function GET(request, { params }) {
+export async function GET(req, { params }) {
   await connectDB()
 
   const { id } = await params

@@ -4,16 +4,38 @@ import { Button } from '@src/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@src/components/ui/card'
 import { Separator } from '@src/components/ui/separator'
 import { useOrders } from '@src/hooks/useOrders'
-import { useUser } from '@src/hooks/useUser'
 import { orderStatusMap, truncateText } from '@src/lib/utils'
-import { IconBuildingBank, IconCashBanknote, IconCheck, IconClipboard, IconCreditCard, IconLoader2, IconPencil, IconStar } from '@tabler/icons-react'
+import { 
+  IconCashBanknote, IconCheck, 
+  IconClipboard, IconCreditCard, 
+  IconLoader2, IconPencil
+ } from '@tabler/icons-react'
 import Image from 'next/image'
 import React from 'react'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
-import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { 
+  Dialog, 
+  DialogClose, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@src/components/ui/dialog"
 import { Input } from '@src/components/ui/input'
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@src/components/ui/input-group'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@src/components/ui/select'
+import { 
+  InputGroup, 
+  InputGroupAddon, 
+  InputGroupInput 
+} from '@src/components/ui/input-group'
+import { 
+  Select, 
+  SelectContent, 
+  SelectGroup, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@src/components/ui/select'
 import { updateOrder, validateUpdateOrderForm } from '@src/lib/admin'
 import { socket } from '@src/lib/socketClient'
 import OrderSkeleton from '@src/components/skeletons/OrderSkeleton'
@@ -287,7 +309,6 @@ const OrderView = ({ id }) => {
                             value={updateForm.phone}
                             onChange={handleChange}
                             className="!text-xl"
-                            // readOnly={!editableData.phone} 
                           />
                         </InputGroup>
                       </span>

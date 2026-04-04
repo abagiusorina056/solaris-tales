@@ -44,7 +44,7 @@ export async function POST(req, { params }) {
     })
 
     user.orders.push(newOrder._id)
-    user.save()
+    await user.save()
 
     const adminId = await User.find({ role: "admin" }).distinct("_id");
     const newNotification = await Notification.create({

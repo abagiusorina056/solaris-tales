@@ -3,7 +3,6 @@ import React from 'react'
 import { authorColumns } from '../columns/author-columns'
 import { useAuthors } from '@src/hooks/useAuthors'
 import { adaptAuthors } from '@src/lib/table-adapters'
-import DataTableSkeleton from '@src/components/skeletons/admin/DataTableSkeleton'
 
 const AuthorsTab = ({ children }) => {
   const {
@@ -19,8 +18,6 @@ const AuthorsTab = ({ children }) => {
     reload
   } = useAuthors()
   const authorRows = adaptAuthors(authors)
-
-  
 
   return (
     <DataTable 

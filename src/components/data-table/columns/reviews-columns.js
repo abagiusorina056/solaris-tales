@@ -7,7 +7,16 @@ import defaultProfilePic from "@public/default-profile-pic.png"
 import Image from "next/image";
 import Link from "next/link";
 import sorina from "@public/mockup-staff/sorina.png"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
+import { 
+	Dialog, 
+	DialogClose, 
+	DialogContent, 
+	DialogDescription, 
+	DialogFooter, 
+	DialogHeader, 
+	DialogTitle, 
+	DialogTrigger 
+} from "@src/components/ui/dialog"
 import { deleteReview } from "@src/lib/admin";
 
 export function reviewColumns(handleDelete) {

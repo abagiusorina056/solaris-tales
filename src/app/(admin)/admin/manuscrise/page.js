@@ -2,14 +2,32 @@
 
 import ManuscriptsSkeleton from '@src/components/skeletons/admin/ManuscriptsSkeleton'
 import { Button } from '@src/components/ui/button'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@src/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@src/components/ui/dropdown-menu'
+import { 
+  Dialog, 
+  DialogClose, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from '@src/components/ui/dialog'
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@src/components/ui/dropdown-menu'
 import { Input } from '@src/components/ui/input'
 import { useRequests } from '@src/hooks/useRequests'
 import { deleteManuscript } from '@src/lib/admin'
 import { socket } from '@src/lib/socketClient'
 import { cn } from '@src/lib/utils'
-import { IconDots, IconDownload, IconExternalLink, IconLoader2, IconScriptX, IconTrash, IconX } from '@tabler/icons-react'
+import { 
+  IconDots, IconDownload, 
+  IconExternalLink, IconLoader2, 
+  IconScriptX, IconTrash, IconX 
+} from '@tabler/icons-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
@@ -66,7 +84,7 @@ const ManuscriptsView = () => {
         </div>
 
         <div className={cn(requests.length ? 'grid grid-cols-3 gap-32' : "w-full")}>
-          {requests.length ? requests.map((r, i) => r?.pdfDocument &&(
+          {requests.length ? requests.map((r, i) => r?.pdfDocument && (
             <ManuscriptCard 
               key={i} 
               request={r} 
@@ -124,13 +142,53 @@ const ManuscriptCard = ({ request, pId, sender, reload }) => {
                 <span>Deschide intr-o fila noua</span>
               </Link>
             </DropdownMenuItem >
-            <DropdownMenuItem className={"flex items-center gap-2 text-red-500! hover:text-red-500"}>
-              <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>
-                <DialogTrigger asChild>
-                  <Button className="flex-1/2 text-red-500 bg-gray-200 hover:bg-gray-200 rounded-md cursor-pointer">
-                    <IconTrash size={48} />
-                    <span>Sterge</span>
+            <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+              <DialogTrigger asChild>
+                <DropdownMenuItem 
+                  onSelect={(e) => {
+                    e.preventDefault()
+                    setDeleteDialog(true)
+                  }}
+                  className={"flex items-center gap-2 text-red-500! hover:text-red-500"}
+                >
+                  <IconTrash size={24} className='text-red-500' />
+                  <span>Sterge</span>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[680px]">
+                <DialogHeader>
+                  <DialogTitle>Atentie</DialogTitle>
+                </DialogHeader>
+                <DialogDescription className={"flex flex-col gap-4"}>
+                  <span className='text-xl'>
+                    Urmeaza sa stergi aceast manuscris
+                  </span>
+                </DialogDescription>
+                <DialogFooter>
+                  <DialogClose className="cursor-pointer text-gray-600 rounded-sm px-4 py-1 border-1"> 
+                    Anuleaza
+                  </DialogClose>
+                  <Button
+                    disabled={isDeleting}
+                    onClick={handleDelete}
+                    className="cursor-pointer text-white bg-red-500 hover:bg-red-500 rounded-sm px-4 py-1 border-1"
+                  >
+                    {isDeleting ? (
+                      <IconLoader2 className="rotate" />
+                    ) : (
+                      <span>Sterge</span>
+                    )}
                   </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            {/* <DropdownMenuItem className={"flex items-center gap-2 text-red-500! hover:text-red-500"}>
+              <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+                <DialogTrigger>
+                  <div className={"flex items-center gap-2"}>
+                    <IconTrash size={24} className='text-red-500' />
+                    <span>Sterge</span>
+                  </div>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[680px]">
                   <DialogHeader>
@@ -146,8 +204,8 @@ const ManuscriptCard = ({ request, pId, sender, reload }) => {
                       Anuleaza
                     </DialogClose>
                     <Button
-                      // disabled={isUpdating}
-                      // onClick={handleDelete}
+                      disabled={isDeleting}
+                      onClick={handleDelete}
                       className="cursor-pointer text-white bg-red-500 hover:bg-red-500 rounded-sm px-4 py-1 border-1"
                     >
                       {isDeleting ? (
@@ -159,10 +217,7 @@ const ManuscriptCard = ({ request, pId, sender, reload }) => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-              
-              <IconTrash size={24} className='text-red-500' />
-              <span>Sterge</span>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

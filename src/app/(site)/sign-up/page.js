@@ -25,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@src/components/ui/select"
-import { toast } from "sonner";
 import { validateSignUpForm } from "@src/lib/utils";
 
 const SignUp = () => {
@@ -264,9 +263,7 @@ const SignUp = () => {
 						{disabled ? (
 							<AiOutlineLoading3Quarters className="rotate" />
 						) : (
-							<span>
-								Inregistrare
-							</span>
+							<span>Inregistrare</span>
 						)}
 					</Button>
 				</form>

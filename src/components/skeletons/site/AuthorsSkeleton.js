@@ -3,7 +3,11 @@ import { Skeleton } from "@src/components/ui/skeleton"
 import PageTitle from '@src/app/components/PageTitle'
 import { Input } from '@src/components/ui/input'
 import { IconLoader2, IconStar } from '@tabler/icons-react'
-import { FaFilter, FaSearch, FaSortAmountDown } from 'react-icons/fa'
+import { 
+  FaFilter, 
+  FaSearch, 
+  FaSortAmountDown 
+} from 'react-icons/fa'
 
 const AuthorsSkeleton = () => {
   return (

@@ -12,7 +12,13 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@src/components/ui/input-group"
-import { IconBlockquote, IconLoader2, IconSearch, IconSignature, IconX } from '@tabler/icons-react';
+import { 
+  IconBlockquote, 
+  IconLoader2, 
+  IconSearch, 
+  IconSignature, 
+  IconX 
+} from '@tabler/icons-react';
 import {
   Popover,
   PopoverContent,
@@ -36,8 +42,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@src/components/ui/command"
 import { Button } from '@src/components/ui/button'
 import { FaRegCalendar } from "react-icons/fa6";
@@ -55,15 +59,8 @@ import { genres } from '@src/lib/genres';
 const AddBookView = ({ }) => {
   const {
     authors,
-    totalAuthors,
-    loading: loadingAuhtors,
-    page: authorsPage,
-    setPage: setAuthorsPage,
-    pageSize: authorsPageSize,
-    setPageSize: setAuthorsPageSize,
     search: searchAuthors,
     setSearch: setSearchAuthors,
-    reload: reloadAuthors,
   } = useAuthors({ limit: 3 })
   const defaultValues = {
     title: "",
@@ -128,7 +125,6 @@ const AddBookView = ({ }) => {
     e.stopPropagation()
     setAddDisabled(true)
 
-    const author = ""
     const isValid = validateAddBookForm(formData)
 
     if (!isValid) {
@@ -456,7 +452,7 @@ const AddBookView = ({ }) => {
                 <CommandList>
                   <CommandEmpty>Niciun gen gasit</CommandEmpty>
                   <CommandGroup >
-                    {genres.genres.map((g, i) => (
+                    {genres.genres.map((g) => (
                       <CommandItem 
                         key={g.id}
                         className={"px-0! py-0!"}

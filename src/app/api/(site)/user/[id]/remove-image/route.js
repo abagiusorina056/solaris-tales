@@ -2,7 +2,6 @@ import cloudinary from "@src/lib/cloudinary";
 import { connectDB } from "@src/lib/mongodb";
 import { getCloudinaryPublicId } from "@src/lib/utils";
 import { Author } from "@src/models/Authors";
-import { Notification } from "@src/models/Notification";
 import { User } from "@src/models/User"
 import { NextResponse } from "next/server";
 

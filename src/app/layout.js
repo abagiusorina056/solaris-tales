@@ -1,13 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import LayoutWrapper from "./components/LayoutWrapper";
 import { Toaster } from "sonner";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { TiWarningOutline } from "react-icons/ti";
 import { FiXCircle } from "react-icons/fi";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +27,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}>
         {children}
 
         <Toaster

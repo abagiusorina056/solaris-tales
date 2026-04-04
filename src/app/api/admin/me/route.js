@@ -1,9 +1,15 @@
+import { ensureAdmin } from "@src/lib/auth-server";
 import { connectDB } from "@src/lib/mongodb";
 import { User } from "@src/models/User";
 
 export async function GET(req) {
   try {
     await connectDB();
+
+    const adminEnsurance = await ensureAdmin();
+    if (!adminEnsurance) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
     const adminData = await User.aggregate([
       {

@@ -9,7 +9,7 @@ import { BsEnvelope } from 'react-icons/bs';
 import { useUser } from '@src/hooks/useUser';
 
 const Footer = () => {
-    const { user } = useUser()
+    const { data: user } = useUser()
 
     const defaultValues = {
         email: user?.email || "",

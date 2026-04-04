@@ -11,7 +11,6 @@ export async function GET(req, { params }) {
     const { searchParams } = new URL(req.url)
 
     let userId = searchParams.get("user") || ""
-    let page = searchParams.get("page") || ""
 
     if (userId.includes("?")) {
       userId = userId.split("?")[0];

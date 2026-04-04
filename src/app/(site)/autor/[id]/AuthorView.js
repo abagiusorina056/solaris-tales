@@ -33,8 +33,6 @@ const AuthorView = ({ id }) => {
     totalAuthors: totalBooks,
     search,
     setSearch,
-    loading,
-    reload
   } = useAuthors({}, `/api/authors/${id}`)
   const { data: user } = useUser()
 

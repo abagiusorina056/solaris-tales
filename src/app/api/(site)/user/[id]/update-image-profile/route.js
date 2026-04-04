@@ -26,7 +26,7 @@ export async function PATCH(req, { params }) {
     }
     
     user.profileImage = image
-    user.save()
+    await user.save()
     await Author.findOneAndUpdate({ userId: id }, { image: image })
 
     global.io.emit("imageUpdated")

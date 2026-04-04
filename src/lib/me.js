@@ -119,5 +119,5 @@ export async function getInitialUser() {
     },
   ]);
 
-  return JSON.parse(JSON.stringify(user[0])); // Clean for hydration
+  return JSON.parse(JSON.stringify(user[0]));
 }

@@ -1,6 +1,10 @@
 import React, { useState } from "react"
 import { cn } from "@src/lib/utils"
-import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa"
+import { 
+  FaRegStar,
+  FaStar, 
+  FaStarHalfAlt 
+} from "react-icons/fa"
 
 const StarReviewComponent = ({ review, handleStarReview, active = false, size }) => {
   const stars = [1, 2, 3, 4, 5]

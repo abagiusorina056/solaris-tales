@@ -35,7 +35,7 @@ import {
 import { Button } from "@src/components/ui/button";
 import { logout } from "@src/lib/auth";
 import ImageDropzone from "@src/app/components/ImageDropzone";
-import { updateProfile, updateProfilImage } from "@src/lib/user";
+import { removeImage, updateProfile, updateProfilImage } from "@src/lib/user";
 import { useRouter } from "next/navigation";
 import { Input } from "@src/components/ui/input";
 import { FaInstagram, FaPhoneAlt, FaRegCalendar, FaSearch } from "react-icons/fa";
@@ -48,10 +48,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@src/components/ui/popo
 import { Calendar } from "@src/components/ui/calendar";
 import { ro } from "date-fns/locale";
 import { format } from "date-fns";
-import { orderStatusMap, truncateText, validateUpdateProfileForm } from "@src/lib/utils";
+import { cn, orderStatusMap, truncateText, validateUpdateProfileForm } from "@src/lib/utils";
 import { socket } from "@src/lib/socketClient";
 import { useUser } from "@src/hooks/useUser";
-import { IconHeartX, IconRotate, IconStar, IconTruckDelivery } from "@tabler/icons-react";
+import { IconHeartX, IconLoader2, IconRotate, IconStar, IconTruckDelivery, IconUpload, IconX } from "@tabler/icons-react";
 import { Separator } from "@src/components/ui/separator";
 import Link from "next/link";
 import ProfileSkeleton from "@src/components/skeletons/site/ProfileSkeleton";
@@ -96,9 +96,19 @@ const UserView = () => {
       invalidateUser()
     })
 
+    socket.on("imageUpdated", () => {
+      invalidateUser()
+    })
+
+    socket.on("imageRemoved", () => {
+      invalidateUser()
+    })
+
     return () => {
       socket.off("userUpdated")
       socket.off("order-placed")
+      socket.off("imageUpdated")
+      socket.off("imageRemoved")
     }
   }, [invalidateUser])
 
@@ -328,9 +338,12 @@ const UserCard = ({ user }) => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [preview, setPreview] = useState(user?.profileImage || "");
   const [file, setFile] = useState(null);
+  const [isRemoving, setIsRemoving] = useState(false)
   const [detailedBio, setDetailedBio] = useState(false)
 
   const handleChangeProfilePic = async () => {
+    setImageDialog(false)
+
     if (!file) return;
     await updateProfilImage(file, user?._id);
 
@@ -354,48 +367,70 @@ const UserCard = ({ user }) => {
       return;
     }
 
+    setProfileDialog(false)
     updateProfile(user._id, formData)
-    .then(() => {
-      setProfileDialog(false)
-      setIsDisabled(false)
-    })
+      .then(() => setIsDisabled(false))
+  }
+
+  const handleImageRemoval = () => {
+    setIsRemoving(true)
+    removeImage(user?.profileImage, user?._id)
+      .then(() => setIsRemoving(false))
   }
 
   return (
     <div className="flex items-start relative px-6 pt-10 gap-8 shadow-md border-2 border-solid border-[#E6E6E6]">
-      <div className="flex flex-col flex-1/4 items-center">
-        <Dialog open={imageDialog} onOpenChange={setImageDialog}>
-          <DialogTrigger className="cursor-pointer border-1 border-none relative group">
-            <MdEdit
-              size={32}
-              cursor="pointer"
-              className="absolute right-4 top-4 text-white bg-(--color-primary) rounded-full p-1 scale-140 cursor-pointer transition-all pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100"
+      <div className="flex flex-col flex-1/4 items-center relative">
+        <div className="relative">
+          <div className="group cursor-pointer">
+            <Image
+              src={user?.profileImage || defaultProfilPic}
+              width={300}
+              height={300}
+              alt={user?.firstName + " " + user?.lastName || ""}
+              className='w-50 aspect-square rounded-full'
             />
-            <div className="w-50 aspect-square rounded-full overflow-hidden shadow-lg">
-              <Image
-                src={preview || defaultProfilPic}
-                width={300}
-                height={300}
-                className="bg-transparent object-center aspect-square object-cover"
-                alt={user.firstName + " " + user.lastName}
-              />
-            </div>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Alege o noua poza de profil</DialogTitle>
-              <DialogDescription></DialogDescription>
-              <ImageDropzone
-                isNewProfilePic
-                onFileSelect={(f) => {
-                  setFile(f);
-                  setPreview(URL.createObjectURL(f));
-                }}
-                setProfilImage={handleChangeProfilePic}
-              />
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+            <Dialog open={imageDialog} onOpenChange={setImageDialog}>
+              <DialogTrigger className="absolute curosr-pointer w-full h-full flex flex-col items-center justify-center bg-black/50 rounded-full top-0 right-0 opacity-0 group-hover:opacity-100 transition-all duration-300 ease">
+                <IconUpload size={40} className="text-white" />
+                <p className="text-white text-base">
+                  Incarca o <br /> fotografie noua
+                </p>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Alege o noua poza de profil</DialogTitle>
+                  <DialogDescription></DialogDescription>
+                  <ImageDropzone
+                    isNewProfilePic
+                    isAdmin
+                    onFileSelect={(f) => {
+                      setFile(f);
+                      // setPreview(URL.createObjectURL(f));
+                    }}
+                    setProfilImage={handleChangeProfilePic}
+                  />
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          </div>
+          {isRemoving ? (
+            <IconLoader2 
+              size={32} 
+              className='rotate absolute text-white bg-black hover:bg-black/60 transition-all p-1 rounded-full top-0 right-0' 
+            />
+          ) : (
+            <IconX 
+              size={32} 
+              onClick={handleImageRemoval}
+              className={cn(
+                "absolute right-0 top-0 text-white bg-black rounded-full p-1 scale-140 transition-all pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100",
+                (!user?.profileImage && !preview) && "group-hover:opacity-40 group-hover:pointer-events-none"
+              )}
+              cursor="pointer"
+            />
+          )}
+        </div>
         <span className="text-3xl font-extrabold mt-2">
           {user.firstName + " " + user.lastName}
         </span>

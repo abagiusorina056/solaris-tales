@@ -15,8 +15,10 @@ export async function PATCH(req, { params }) {
     if (!updatedAuthor) {
       return NextResponse.json({ error: "Autorul nu a fost gasit" }, { status: 404 })
     }
+
+    await User.findByIdAndUpdate(updatedAuthor?.userId, { bio: userData?.bio })
     
-    global.io.emit("authorUpdated", updatedAuthor);
+    global.io.emit("userUpdatedAdmin", updatedAuthor);
 
     if (updatedAuthor?.userId) {
       const adminId = await User.find({ role: "admin" }).distinct("_id");

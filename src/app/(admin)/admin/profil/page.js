@@ -16,7 +16,9 @@ import {
   IconCheck, IconPencilCancel, 
   IconPlus,
   IconLoader2,
-  IconCalendarWeek
+  IconCalendarWeek,
+  IconFileDigitFilled,
+  IconUpload,
 } from "@tabler/icons-react"
 import { BsEnvelope } from "react-icons/bs"
 import Image from "next/image"
@@ -27,13 +29,14 @@ import { deleteUser, updateUser } from "@src/lib/admin"
 import { toast } from "sonner"
 import { useUser } from "@src/hooks/useUser";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@src/components/ui/input-group";
-import { updateProfile } from "@src/lib/user";
+import { removeImage, updateProfile, updateProfilImage } from "@src/lib/user";
 import { validateUpdateProfileForm } from "@src/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@src/components/ui/popover";
 import { Calendar } from "@src/components/ui/calendar";
 import { socket } from "@src/lib/socketClient";
 import { useRouter } from "next/navigation";
 import { useAdmin } from "@src/hooks/useAdmin";
+import ImageDropzone from "@src/app/components/ImageDropzone";
 
 const Profile = () => {
   const { data: user, invalidateAdmin } = useAdmin()
@@ -50,8 +53,17 @@ const Profile = () => {
   
   const [formValues, setFormValues] = useState(defaultValues)
   const [isUpdating, setIsUpdating] = useState(false)
-  const [editDialog, setEditDialog] = useState(false);
+  const [imageDialog, setImageDialog] = useState(false);
   const [dialog, setDialog] = useState(false);
+  const [file, setFile] = useState(null);
+  const [isRemoving, setIsRemoving] = useState(false)
+
+  const handleChangeProfilePic = async () => {
+    setImageDialog(false);
+
+    if (!file) return;
+    await updateProfilImage(file, user?._id);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -59,6 +71,11 @@ const Profile = () => {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleImageRemoval = () => {
+    setIsRemoving(true)
+    removeImage(user?.profileImage, user?._id)
   }
 
   const handleSubmit = async () => {
@@ -81,9 +98,19 @@ const Profile = () => {
     socket.on("userUpdated", () => {
       invalidateAdmin()
     })
-
+    socket.on("imageUpdated", () => {
+      invalidateAdmin()
+    })
+    
+    socket.on("imageRemoved", () => {
+      setIsRemoving(false)
+      invalidateAdmin()
+    })
+    
     return () => {
       socket.off("userUpdated")
+      socket.off("imageUpdated")
+      socket.off("imageRemoved")
     }
   }, [invalidateAdmin])
 
@@ -93,18 +120,49 @@ const Profile = () => {
         <div className='flex items-start gap-8'>
           <div className='flex flex-1/4! flex-col items-center gap-4 relative'>
             <div className="relative">
-              <Image
-                src={user?.profileImage || user?.image || defaultProfilPic}
-                width={300}
-                height={300}
-                alt={user?.firstName + " " + user?.lastName || user?.name || "User Avatar"}
-                className='w-75 aspect-ratio drop-shadow-2xl rounded-full'
-              />
-              <IconX 
-                size={42} 
-                className='absolute text-white bg-black hover:bg-black/60 transition-all p-1 rounded-full top-0 right-0' 
-                cursor="pointer"
-              />
+              <div className="group cursor-pointer">
+                <Image
+                  src={user?.profileImage || defaultProfilPic}
+                  width={300}
+                  height={300}
+                  alt={user?.firstName + " " + user?.lastName || user?.name || "User Avatar"}
+                  className='w-75 aspect-square drop-shadow-2xl rounded-full'
+                />
+                <Dialog open={imageDialog} onOpenChange={setImageDialog}>
+                  <DialogTrigger className="absolute curosr-pointer w-full h-full flex flex-col items-center justify-center bg-black/50 rounded-full top-0 right-0 opacity-0 group-hover:opacity-100 transition-all duration-300 ease">
+                    <IconUpload size={64} className="text-white" />
+                    <p className="text-white text-lg">Incarca o fotografie noua</p>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Alege o noua poza de profil</DialogTitle>
+                      <DialogDescription></DialogDescription>
+                      <ImageDropzone
+                        isNewProfilePic
+                        isAdmin
+                        onFileSelect={(f) => {
+                          setFile(f);
+                          // setPreview(URL.createObjectURL(f));
+                        }}
+                        setProfilImage={handleChangeProfilePic}
+                      />
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              </div>
+              {isRemoving ? (
+                <IconLoader2 
+                  size={42} 
+                  className='rotate absolute text-white bg-black hover:bg-black/60 transition-all p-1 rounded-full top-0 right-0' 
+                />
+              ) : (
+                <IconX 
+                  size={42} 
+                  onClick={handleImageRemoval}
+                  className='absolute text-white bg-black hover:bg-black/60 transition-all p-1 rounded-full top-0 right-0' 
+                  cursor="pointer"
+                />
+              )}
             </div>
           </div>
           <div className='flex flex-col flex-3/4'>

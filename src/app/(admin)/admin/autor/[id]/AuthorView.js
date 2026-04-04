@@ -13,11 +13,10 @@ import UserAuthorSkeleton from '@src/components/skeletons/admin/UserAuthorSkelet
 const AuthorView = ({ id }) => {
   const {
     authors: author,
+    reload
   } = useAuthors({}, `/api/admin/authors/${id}`)
   const [authorState, setAuthorState] = useState(author)
   const [title, setTitle] = useState("Carti")
-
-  console.log(author)
 
   useEffect(() => {
     socket.on("authorUpdated", (updatedAuthor) => {
@@ -40,7 +39,11 @@ const AuthorView = ({ id }) => {
   ) : (
     <div className='pt-16'>
       <div className='px-16 mb-8'>
-        <UserAuthorCard user={authorState?.user?.[0] || authorState} slug={author.slug} />
+        <UserAuthorCard 
+          user={authorState?.user?.[0] || authorState} 
+          slug={author.slug}
+          reload={reload} 
+        />
 
         <Separator className={"mt-12 mb-8"} />
 

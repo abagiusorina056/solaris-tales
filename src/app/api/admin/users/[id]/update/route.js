@@ -1,4 +1,5 @@
 import { connectDB } from "@src/lib/mongodb";
+import { Author } from "@src/models/Authors";
 import { Notification } from "@src/models/Notification";
 import { User } from "@src/models/User"
 import { NextResponse } from "next/server";
@@ -14,8 +15,10 @@ export async function PATCH(req, { params }) {
     if (!updatedUser) {
       return NextResponse.json({ error: "Utilizatorul nu a fost gasit" }, { status: 404 })
     }
+
+    await Author.findOneAndUpdate({ userId: id }, { bio: userData?.bio })
     
-    global.io.emit("userUpdated", updatedUser);
+    global.io.emit("userUpdatedAdmin", updatedUser);
 
     const adminId = await User.find({ role: "admin" }).distinct("_id");
     const newNotification = await Notification.create({
@@ -26,6 +29,8 @@ export async function PATCH(req, { params }) {
       content: "Unele detalii din contul tau au fost modificate de catre admin.",
       referenceLink: "/profil"
     })
+
+    global.io.emit("newNotification");
 
     return NextResponse.json({ messaage: "Utilizator actualizat" }, { status: 201 });
   } catch (error) {

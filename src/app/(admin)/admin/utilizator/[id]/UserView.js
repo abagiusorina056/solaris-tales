@@ -10,7 +10,8 @@ import { socket } from '@src/lib/socketClient'
 
 const UserView = ({ id }) => {
   const {
-    users: user
+    users: user,
+    reload
   } = useUsers({}, `/api/admin/users/${id}`)
   const [userState, setUserState] = useState(user)
 
@@ -35,7 +36,7 @@ const UserView = ({ id }) => {
   ) : (
     <div className='pt-16'>
       <div className='px-16 mb-8'>
-        {userState?._id && <UserAuthorCard user={userState} />}
+        <UserAuthorCard user={userState} reload={reload} />
 
         <Separator className={"mt-12 mb-8"} />
 

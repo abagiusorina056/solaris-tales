@@ -186,11 +186,11 @@ function createImage(url) {
   });
 }
 
-export const uploadImage = async (img) => {
+export const uploadImage = async (img, isAdmin = false) => {
   const formData = new FormData();
   formData.append("file", img);
 
-  const res = await fetch("/api/admin/image/upload", {
+  const res = await fetch(`/api/${isAdmin ? "admin" : "user"}/image/upload`, {
     method: "POST",
     body: formData,
   });

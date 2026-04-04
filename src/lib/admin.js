@@ -1,5 +1,6 @@
 import { toast } from "sonner";
 import { uploadImage } from "./utils";
+import { id } from "zod/v4/locales";
 
 // constants
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -31,14 +32,30 @@ export const deleteMultipleUsers = async (ids) => {
 }
 
 export const updateUser = async (id, userData, isAuthor) => {
+  console.log(id, userData, isAuthor)
   const res = await fetch(
     `/api/admin/${isAuthor ? 'authors' : 'users'}/${id}/update`, 
     {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userData),
+      body: JSON.stringify({ userData }),
     }
   );
+
+  const data = await res.json();
+  if (data.error) {
+    toast.error(data.error)
+  }
+}
+
+export const removeImage = async (id, image, isAuthor) => {
+  const res = await fetch(`/api/admin/${isAuthor ? "authors" : "users"}/${id}/remove-image`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      image,
+    }),
+  });
 
   const data = await res.json();
   if (data.error) {

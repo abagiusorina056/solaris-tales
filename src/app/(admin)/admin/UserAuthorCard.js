@@ -4,7 +4,7 @@ import defaultProfilPic from "@public/default-profile-pic.png";
 import { format } from "date-fns"
 import { ro } from "date-fns/locale"
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@src/components/ui/button"
 import { Input } from "@src/components/ui/input"
 import { Textarea } from "@src/components/ui/textarea"
@@ -15,17 +15,21 @@ import {
   IconPencil, IconTrash, IconExternalLink, IconClipboard, 
   IconCheck, IconPencilCancel, 
   IconPlus,
-  IconLoader2
+  IconLoader2,
+  IconUpload
 } from "@tabler/icons-react"
 import { BsEnvelope } from "react-icons/bs"
 import Image from "next/image"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@src/components/ui/dialog"
 import { FaInstagram } from "react-icons/fa"
 import { LuFacebook } from "react-icons/lu"
-import { deleteUser, updateUser } from "@src/lib/admin"
+import { deleteUser, removeImage, updateUser } from "@src/lib/admin"
 import { toast } from "sonner"
+import ImageDropzone from "@src/app/components/ImageDropzone";
+import { updateProfilImage } from "@src/lib/user";
+import { socket } from "@src/lib/socketClient";
 
-const UserAuthorCard = ({ user, slug }) => {
+const UserAuthorCard = ({ user, slug, reload }) => {
   const defaultValues = {
     instagram: user?.instagram,
     facebook: user?.facebook,
@@ -38,6 +42,8 @@ const UserAuthorCard = ({ user, slug }) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [editDialog, setEditDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false)
+  const [image, setImage] = useState(user?.profileImage || user?.image)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -47,10 +53,19 @@ const UserAuthorCard = ({ user, slug }) => {
     }))
   }
 
+  const handleImageRemoval = () => {
+    setIsRemoving(true)
+    removeImage(
+      user?._id, 
+      user?.profileImage || user?.image, 
+      user?.slug?.length > 0
+    )
+  }
+
   const handleSubmit = async () => {
     setIsUpdating(true)
 
-    await updateUser(user._id, formValues, isAuthor)
+    await updateUser(user._id, formValues, user?.slug > 0)
     toast.success("Utilizator actualizat cu succes")
     setIsUpdating(false)
     setEditDialog(false)
@@ -65,22 +80,58 @@ const UserAuthorCard = ({ user, slug }) => {
     setDeleteDialog(false)
   }
 
+  useEffect(() => {
+    socket.on("userUpdatedAdmin", () => {
+      reload()
+    })
+    
+    socket.on("imageRemoved", () => {
+      setIsRemoving(false)
+      setImage(defaultProfilPic)
+    })
+    
+    return () => {
+      socket.off("userUpdatedAdmin")
+      socket.off("imageRemoved")
+    }
+  }, [reload])
+
+  useEffect(() => {
+    setFormValues({
+      instagram: user?.instagram,
+    facebook: user?.facebook,
+    bio: user?.bio
+    })
+  }, [user])
+
+  useEffect(() => {
+    setImage(user?.profileImage || user?.image)
+  }, [user])
+
   return (
     <div className='flex items-start gap-8'>
       <div className='flex flex-1/4! flex-col items-center gap-4 relative'>
         <div className="relative">
           <Image
-            src={user?.profileImage || user?.image || defaultProfilPic}
+            src={image || defaultProfilPic}
             width={300}
             height={300}
-            alt={user?.firstName + " " + user?.lastName || user?.name || "User Avatar"}
-            className='w-75 aspect-ratio drop-shadow-2xl rounded-full'
+            alt={user?.firstName + " " + user?.lastName || user?.name || ""}
+            className='w-75 aspect-square drop-shadow-2xl rounded-full'
           />
-          <IconX 
-            size={42} 
-            className='absolute text-white bg-black hover:bg-black/60 transition-all p-1 rounded-full top-0 right-0' 
-            cursor="pointer"
-          />
+          {isRemoving ? (
+            <IconLoader2 
+              size={42} 
+              className='rotate absolute text-white bg-black hover:bg-black/60 transition-all p-1 rounded-full top-0 right-0' 
+            />
+          ) : (
+            <IconX 
+              size={42} 
+              onClick={handleImageRemoval}
+              className='absolute text-white bg-black hover:bg-black/60 transition-all p-1 rounded-full top-0 right-0' 
+              cursor="pointer"
+            />
+          )}
         </div>
         {slug && (
           <div className="relative">
@@ -298,7 +349,7 @@ const UserAuthorCard = ({ user, slug }) => {
                     type="text"
                     name="instagram"
                     id="instagram-preview"
-                    value={user?.instagram || ""}
+                    value={formValues.instagram || ""}
                     readOnly
                     className="w-full !text-2xl"
                   />
@@ -317,7 +368,7 @@ const UserAuthorCard = ({ user, slug }) => {
                     type="text"
                     name="facebook"
                     id="facebook-preview"
-                    value={user?.facebook || ""}
+                    value={formValues.facebook || ""}
                     readOnly
                     className="w-full !text-2xl"
                   />
@@ -350,7 +401,7 @@ const UserAuthorCard = ({ user, slug }) => {
                     placeholder=""
                     name="bio"
                     id="bio-preview"
-                    value={user?.bio || user?.description || ""}
+                    value={formValues.bio || ""}
                     onChange={handleChange}
                     className="w-full h-34! !text-xl"
                   />

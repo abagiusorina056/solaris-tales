@@ -18,7 +18,8 @@ const ImageDropzone = ({
   isNewProfilePic = false,
   setProfilImage,
   hideConfirmButton = false,
-  isPdfOnly = false
+  isPdfOnly = false,
+  isAdmin = false
 }) => {
   const inputRef = useRef(null);
   const [preview, setPreview] = useState(null);
@@ -28,7 +29,7 @@ const ImageDropzone = ({
   const [cropAreaPixels, setCropAreaPixels] = useState(null);
 
   const [isSavingCrop, setIsSavingCrop] = useState(false);
-  const [isConfirmDisabled, setIsConfirmDisabled] = useState(false);
+  const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
 
   const handleCropComplete = (_, pixels) => {
     setCropAreaPixels(pixels);
@@ -88,12 +89,14 @@ const ImageDropzone = ({
       toast.error("Eroare la decupare");
     } finally {
       setIsSavingCrop(false);
+      setIsConfirmDisabled(false)
     }
   };
 
   // ========= CONFIRM =========
   const handleConfirm = async () => {
     setIsConfirmDisabled(true);
+    setIsSavingCrop()
 
     if (preview?.type === "image" && isNewProfilePic) {
       const croppedFile = await saveCroppedImage();
@@ -217,11 +220,11 @@ const ImageDropzone = ({
       {/* CONFIRM */}
       {isNewProfilePic && !hideConfirmButton && (
         <Button
-          disabled={!preview || isConfirmDisabled}
+          disabled={isConfirmDisabled}
           onClick={handleConfirm}
-          className="mt-4 bg-[var(--color-primary)]"
+          className={cn("mt-4 bg-[var(--color-primary)]", isAdmin && "bg-black!")}
         >
-          {isConfirmDisabled ? (
+          {isSavingCrop ? (
             <AiOutlineLoading3Quarters className="animate-spin" />
           ) : (
             "Confirmă"

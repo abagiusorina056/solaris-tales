@@ -41,6 +41,26 @@ export const updateProfile = async (userId, newData) => {
   }
 }
 
+export const removeImage = async (image, userId) => {
+  const res = await fetch(`/api/user/${userId}/remove-image`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      image,
+    }),
+  })
+
+  const data = await res.json();
+
+  if (data.error) {
+    toast.error(data.error)
+  } 
+  
+  toast.success("Produs eliminat")
+}
+
 export const changeFavorite = async (bookId, userId, action) => {
   const res = await fetch(`/api/user/${userId}/favorite`, {
     method: "PATCH",

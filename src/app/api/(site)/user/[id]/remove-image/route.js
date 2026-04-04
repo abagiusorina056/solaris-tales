@@ -2,6 +2,7 @@ import cloudinary from "@src/lib/cloudinary";
 import { connectDB } from "@src/lib/mongodb";
 import { getCloudinaryPublicId } from "@src/lib/utils";
 import { Author } from "@src/models/Authors";
+import { Notification } from "@src/models/Notification";
 import { User } from "@src/models/User"
 import { NextResponse } from "next/server";
 
@@ -9,29 +10,26 @@ export async function PATCH(req, { params }) {
   try {
     await connectDB();
 
-    const form = await req.formData();
     const { id } = await params
+    const { image } = await req.json();
 
-    const image = form.get("image");
-
-    const user = await User.findById(id)
-    if (!user) {
+    const updatedUser = await User.findByIdAndUpdate(
+      id, 
+      { profileImage: "" },
+      { new: true }
+    )
+    if (!updatedUser) {
       return NextResponse.json({ error: "Utilizatorul nu a fost gasit" }, { status: 404 })
     }
 
-    
-    if (user?.profileImage) {
-      let publicId = user?.profileImage?.length > 0 && getCloudinaryPublicId(user?.profileImage)
-      await cloudinary.uploader.destroy("nextjs_uploads/" + publicId)
-    }
-    
-    user.profileImage = image
-    user.save()
-    await Author.findOneAndUpdate({ userId: id }, { image: image })
+    await Author.findOneAndUpdate({ userId: id }, { image: "" })
 
-    global.io.emit("imageUpdated")
-
-    return NextResponse.json({ messaage: "Poza de profil actualizata" }, { status: 201 });
+    let publicId = image?.length > 0 && getCloudinaryPublicId(image)
+    await cloudinary.uploader.destroy("nextjs_uploads/" + publicId)
+    
+    global.io.emit("imageRemoved");
+    
+    return NextResponse.json({ messaage: "Poza de profil stearsa" }, { status: 201 });
   } catch (error) {
     console.log(error)
     return NextResponse.json(

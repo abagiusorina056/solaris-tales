@@ -72,11 +72,13 @@ const Navbar = () => {
 			invalidateUser()
 		});
 		socket.on("order-placed", () => invalidateUser())
+		socket.on("newNotification", () => invalidateUser())
 
 		return () => {
 			socket.off("favorite");
 			socket.off("bag");
 			socket.off("order-placed");
+			socket.off("newNotification");
 		};
 	}, [invalidateUser])
 

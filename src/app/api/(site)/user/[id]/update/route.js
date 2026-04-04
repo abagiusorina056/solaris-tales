@@ -1,4 +1,5 @@
 import { connectDB } from "@src/lib/mongodb";
+import { Author } from "@src/models/Authors";
 import { User } from "@src/models/User"
 import { NextResponse } from "next/server";
 
@@ -13,6 +14,8 @@ export async function PATCH(req, { params }) {
     if (!updatedUser) {
       return NextResponse.json({ error: "Utilizatorul nu a fost gasit" }, { status: 404 })
     }
+
+    await Author.findOneAndUpdate({ userId: id }, { bio: newData?.bio })
     
     global.io.emit("userUpdated", updatedUser);
 

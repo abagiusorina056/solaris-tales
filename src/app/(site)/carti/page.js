@@ -124,6 +124,7 @@ const BooksView = () => {
   const { 
     books: books,
     page,
+    globalBounds,
     setPage,
     totalBooks,
     search,
@@ -282,8 +283,8 @@ const BooksView = () => {
                       minPrice: value[0],
                       maxPrice: value[1],
                     }))}
-                    min={minPrice}
-                    max={maxPrice}
+                    min={globalBounds[0]}
+                    max={globalBounds[1]}
                     step={10}
                   />
                 </div>
@@ -367,7 +368,7 @@ const BooksView = () => {
                     genre: "",
                     minPrice: 0,
                     maxPrice: 9999,
-                    discount: false
+                    discount: "false"
                   })
                 }}
                 className="flex-1/2 text-xl cursor-pointer text-[var(--color-primary)] bg-[#d9d9d9] hover:bg-[#d9d9d9] border-1" >

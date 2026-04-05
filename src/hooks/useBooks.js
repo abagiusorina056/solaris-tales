@@ -26,6 +26,7 @@ export function useBooks(
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [search, setSearch] = useState(searchTerm)
+  const [globalBounds, setGlobalBounds] = useState([0, 9999])
 
   const [loading, setLoading] = useState(false)
 
@@ -53,6 +54,7 @@ export function useBooks(
 
       setBooks(data.books)
       setTotalBooks(data.total)
+      setGlobalBounds([data?.globalMin || 0, data?.globalMax || 9999])
     } catch (err) {
       console.error("Failed loading books", err)
     }
@@ -78,6 +80,7 @@ export function useBooks(
     books,
     totalBooks,
     loading,
+    globalBounds,
 
     page,
     setPage,

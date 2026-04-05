@@ -24,7 +24,7 @@ export async function DELETE(req, { params }) {
     let publicId = author?.image.length > 0 && getCloudinaryPublicId(author?.image)
 
     const promises = [
-      publicId && cloudinary.uploader.destroy(publicId),
+      publicId && cloudinary.uploader.destroy("nextjs_uploads/" + publicId),
       author.deleteOne(),
     ].filter(Boolean)
 

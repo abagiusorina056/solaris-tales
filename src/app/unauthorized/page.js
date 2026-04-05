@@ -2,8 +2,9 @@ import Image from 'next/image'
 import React from 'react'
 import logo from "@public/logo.png"
 import Link from 'next/link'
+import { IconCancel } from '@tabler/icons-react'
 
-const PageNotFound = () => {
+const Unauthorized = () => {
   return (
     <div className='flex flex-col items-center justify-center gap-2 bg-[#F0DECA] h-[100vh] relative'>
       <Image 
@@ -12,14 +13,19 @@ const PageNotFound = () => {
         alt=''
       />
       
-      <div className='relative'>
-        <h1 className='z-1 text-[300px] text-[var(--color-primary)] font-extrabold opacity-90'>404</h1>
-        <h1 className='z-1 text-[300px] text-[var(--color-primary)]/30 font-extrabold opacity-70 absolute -bottom-3 -right-3'>404</h1>
-        <span className='text-white font-bold text-[125px] z-0 absolute -top-1 left-1/2 whitespace-nowrap -translate-x-1/2'>Not Found</span>
+      <div className='flex items-end gap-8'>
+        <div className='relative'>
+          <IconCancel size={300} className='text-[var(--color-primary)]' />
+          <IconCancel size={300} className='absolute text-[var(--color-primary)]/30 -bottom-3 -right-3' />
+        </div>
+        <div className='flex-col -gap-5'>
+          <p className='text-white font-extrabold text-[100px] leading-none'>Ne-</p>
+          <p className='text-white font-extrabold text-[100px] leading-none'>Autorizat</p>
+        </div>
       </div>
       
       <div className='flex absolute bottom-1/6 items-baseline gap-1 text-[var(--color-primary)] font-semibold text-xl'>
-        <span>Documentul cautat nu a fost gasit.</span>
+        <span>Nu ai acces la aceasta pagina.</span>
         <span>Intoarce-te la</span>
         <Link href={"/"}>
           <span className='hover:underline font-extrabold'>Pagina Principala</span>
@@ -29,4 +35,4 @@ const PageNotFound = () => {
   )
 }
 
-export default PageNotFound
+export default Unauthorized

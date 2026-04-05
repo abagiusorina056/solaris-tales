@@ -45,6 +45,7 @@ const OrderView = ({ id }) => {
   const { orders: order } = useOrders({}, `/api/admin/orders/${id}`)
   
   const defaultValues = {
+    name: order.name || "",
     email: order.email || "",
     phone: order.phone || "",
     shippingAdress: order.shippingAdress || "",
@@ -77,13 +78,12 @@ const OrderView = ({ id }) => {
   }
 
   const handleUpdate = async () => {
-    setIsUpdating(true)
-
     const isValid = validateUpdateOrderForm(updateForm)
-
     if (!isValid) {
       return
     }
+
+    setIsUpdating(true)
 
     await updateOrder(order._id, updateForm)
 
@@ -98,11 +98,11 @@ const OrderView = ({ id }) => {
   }, [])
 
   React.useEffect(() => {
-
     if (order && order._id) {
       setOrderData(order);
 
       setUpdateForm({
+        name: order.name || "",
         email: order.email || "",
         phone: order.phone || "",
         shippingAdress: order.shippingAdress || "",
@@ -276,6 +276,18 @@ const OrderView = ({ id }) => {
                       <DialogTitle>Editeaza Comanda {order.slug}</DialogTitle>
                     </DialogHeader>
                     <DialogDescription className={"flex flex-col gap-4"}>
+                      <span className='!text-2xl flex-1/2'>
+                        <span>Nume</span>
+                        <Input
+                          placeholder=""
+                          type="text"
+                          name="name"
+                          id="name-preview"
+                          value={updateForm.name}
+                          onChange={handleChange}
+                          className="w-full !text-2xl"
+                        />
+                      </span>
                       <span className='!text-2xl flex-1/2'>
                         <span>Email</span>
                         <Input

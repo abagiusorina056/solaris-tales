@@ -24,17 +24,19 @@ export async function PATCH(req, { params }) {
     
     global.io.emit("orderUpdated", updatedOrder);
 
-    const adminId = await User.find({ role: "admin" }).distinct("_id");
-    const newNotification = await Notification.create({
-      senderId: adminId[0],
-      recipientId: updatedOrder?.senderId,
-      type: "system",
-      subject: "Comanda modificata",
-      content: `Comanda ${updatedOrder?.slug} a fost modificata de catre admin`,
-      referenceLink: `/comanda/${updatedOrder.id}`
-    })
-
-    global.io.emit("newNotification", newNotification)
+    if (!newData?.status) {
+      const adminId = await User.find({ role: "admin" }).distinct("_id");
+      const newNotification = await Notification.create({
+        senderId: adminId[0],
+        recipientId: updatedOrder?.senderId,
+        type: "system",
+        subject: "Comanda modificata",
+        content: `Comanda ${updatedOrder?.slug} a fost modificata de catre admin`,
+        referenceLink: `/comanda/${updatedOrder.id}`
+      })
+  
+      global.io.emit("newNotification", newNotification)
+    }
 
     return NextResponse.json({ messaage: "Comanda modificata" }, { status: 201 });
   } catch (error) {

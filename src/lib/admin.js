@@ -242,10 +242,17 @@ export const updateOrder = async (orderId, newData) => {
 }
 
 export const validateUpdateOrderForm = (formData) => {
-  const hasEmpty = formData.some(field => !formData[field] || formData[field].trim() === "");
+  const requiredFields = ["name", "email", "phone", "shippingAdress", "billingAdress"];
+  const hasEmpty = requiredFields.some(field => !formData[field] || formData[field].trim() === "");
 
   if (hasEmpty) {
     toast.error("Completeaza toate campurile obligatorii");
+    return false;
+  }
+
+  const nameRegex = /^[a-zA-Z\s\-șțăîâȘȚĂÎÂ']+$/;
+  if (!nameRegex.test(formData.name)) {
+    toast.error("Numele poate conține doar litere și caractere speciale (-, ')");
     return false;
   }
 

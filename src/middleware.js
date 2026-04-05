@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
 
+const restrictedPaths = [
+  "/profil",
+  "/cos",
+  "/carti",  // to be fixed
+  "/autori", // to be fixed
+  "/carte/", // to be fixed
+  "/autor/", // to be fixed
+]
+
 export function middleware(req) {
   const userId = req.cookies.get("user_id")?.value;
   const role = req.cookies.get("role")?.value;
@@ -21,8 +30,10 @@ export function middleware(req) {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith("/profil") && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  for (let path in restrictedPaths) {
+    if (pathname.startsWith(path) && !isLoggedIn) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
   }
 
   if (isLoggedIn && (pathname === "/login" || pathname === "/sign-up")) {

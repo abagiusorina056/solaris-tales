@@ -37,6 +37,7 @@ const Navbar = () => {
 	const [isAddingToBag, setIsAddingToBag] = useState(false)
 	const [isRemovingFav, setIsRemovingFav] = useState(false)
 	const favs = user?.favoriteBooks || []
+	const lastBookDiscount = parseInt(favs[0]?.discount || "0")
 	const bag = user?.bagBooks || []
 	
 	const handleAddToBag = () => {
@@ -197,7 +198,13 @@ const Navbar = () => {
 											<div className="flex-3/4 text-black">
 												<div className="flex w-full justify-between text-xl">
 													<span>{favs[0]?.title}</span>
-													<span>{favs[0]?.price} RON</span>
+													<span className={cn(lastBookDiscount > 0 && 'text-[#fb6767]')}>
+														{
+															lastBookDiscount > 0 
+																? (((100 - lastBookDiscount) * parseFloat(favs[0]?.price)) / 100).toFixed(2)
+																: favs[0]?.price
+														} RON
+													</span>
 												</div>
 												<span>{favs[0]?.author}</span>
 												<p className="opacity-60 text-base mt-2">{truncateText(favs[0]?.description, 100)}</p>

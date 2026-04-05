@@ -32,6 +32,7 @@ import { LuFacebook } from "react-icons/lu"
 import { deleteUser, removeImage, updateUser } from "@src/lib/admin"
 import { toast } from "sonner"
 import { socket } from "@src/lib/socketClient";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@src/components/ui/input-group";
 
 const UserAuthorCard = ({ user, slug, reload }) => {
   const defaultValues = {
@@ -101,15 +102,13 @@ const UserAuthorCard = ({ user, slug, reload }) => {
   }, [reload])
 
   useEffect(() => {
+    setImage(user?.profileImage || user?.image)
+
     setFormValues({
       instagram: user?.instagram,
     facebook: user?.facebook,
     bio: user?.bio
     })
-  }, [user])
-
-  useEffect(() => {
-    setImage(user?.profileImage || user?.image)
   }, [user])
 
   return (
@@ -220,15 +219,26 @@ const UserAuthorCard = ({ user, slug, reload }) => {
                   <IconPhone size={24} />
                   <span>Telefon</span>
                 </div>
-                <Input
-                  placeholder=""
-                  type="text"
-                  name="phoneNumber"
-                  id="phoneNumber-preview"
-                  value={user?.phoneNumber || "-"}
-                  readOnly
-                  className="w-full !text-2xl"
-                />
+                <InputGroup className="bg-transparent placeholder:select-none">
+                  <InputGroupAddon align="inline-start" className={"pr-2 border-gray-400"}>
+                    <span className='text-xl'>+40</span>
+                  </InputGroupAddon>
+                  <InputGroupInput 
+                    placeholder="Telefon"
+                    type="number"
+                    name="phone"
+                    id="phone"
+                    value={
+                      user?.phoneNumber 
+                        ? ((user?.phoneNumber || "")[0] === "0"
+                          ? "+4" +  user?.phoneNumber
+                          : "+40" + user?.phoneNumber)
+                        : "-"
+                    }
+                    onChange={handleChange}
+                    className="!text-xl"
+                  />
+                </InputGroup>
               </div>
             </div>
             <div className='flex gap-2 !text-2xl'>

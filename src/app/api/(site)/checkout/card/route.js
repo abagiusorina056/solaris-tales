@@ -10,6 +10,7 @@ export async function POST(req) {
     shippingAdress,
     billingAdress,
     phone,
+    price
    } = await req.json();
 
   let stripeCustomer;
@@ -29,16 +30,26 @@ export async function POST(req) {
     });
   }
 
-  const line_items = products.map(item => ({
-    price_data: {
-      currency: 'ron',
-      product_data: {
-        name: item.title,
+  const line_items = products.map(item => {
+    const originalPrice = parseFloat(item.price);
+    const discountPercent = parseInt(item.discount || "0");
+
+    const finalPrice = discountPercent > 0 
+      ? originalPrice * (1 - (discountPercent / 100)) 
+      : originalPrice;
+
+    return {
+      price_data: {
+        currency: 'ron',
+        product_data: {
+          name: item.title,
+          description: discountPercent > 0 ? `Reducere ${discountPercent}%` : "Reducere: -",
+        },
+        unit_amount: Math.round(finalPrice * 100), 
       },
-      unit_amount: item.price * 100,
-    },
-    quantity: item.quantity,
-  }));
+      quantity: item.quantity,
+    };
+  });
 
   const session = await stripe.checkout.sessions.create({
     customer: stripeCustomer.id,

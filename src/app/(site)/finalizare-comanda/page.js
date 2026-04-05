@@ -109,7 +109,8 @@ const Checkout = () => {
       title: book.title,
       price: parseFloat(book.price),
       bookId: book._id,
-      quantity: quantities[book._id]
+      quantity: quantities[book._id],
+      discount: book?.discount
     }))
 
     setLoading(true)
@@ -349,7 +350,14 @@ const Checkout = () => {
               <FieldContent>
                 <FieldTitle className="flex items-center justify-between w-full text-2xl">
                   <span>Ramburs (numerar) la curier</span>
-                  <IconCashBanknote size={40} className='opacity-40' />
+                  <IconCashBanknote 
+                    size={40} 
+                    className={cn(
+                      `opacity-` + 
+                        (formData.paymentMethod === "cash" ? "100" : "40")
+                      )
+                    }
+                  />
                 </FieldTitle>
                 <FieldDescription className="text-xl">
                   Platesti cu numerar produsele cand ajunge curierul la adresa ta 
@@ -375,7 +383,14 @@ const Checkout = () => {
               <FieldContent>
                 <FieldTitle className="flex items-center justify-between w-full text-2xl">
                   <span>Online (cu cardul)</span>
-                  <IconCreditCard size={40} className='opacity-40' />
+                  <IconCreditCard 
+                    size={40} 
+                    className={cn(
+                      `opacity-` + 
+                        (formData.paymentMethod === "card" ? "100" : "40")
+                      )
+                    }
+                  />
                 </FieldTitle>
                 <FieldDescription className="text-xl">
                   Platesti comanda acum si iti livram produsele in cel mai scurt timp posibil 
@@ -477,7 +492,7 @@ const Checkout = () => {
                 <AiOutlineLoading3Quarters className="rotate" />
               ) : (
                 formData.paymentMethod === "cash" 
-                  ? "Trimite Comanda" 
+                  ? "Plaseaza Comanda" 
                   : "Plateste online"
               )}
               

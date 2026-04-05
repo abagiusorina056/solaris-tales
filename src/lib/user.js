@@ -163,6 +163,43 @@ export const submitOrder = async (userId = "", orderData) => {
   window.location.href = url
 }
 
+export const cancelOrder = async (orderId, userId) => {
+  const res = await fetch(`/api/order/${orderId}/cancel`, {
+    method: 'PATCH',
+    body: JSON.stringify({ 
+      userId
+    }),
+  });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    toast.error(result.error || "Eroare");
+    return;
+  }
+
+  toast.success("Comanda modificata cu succes");
+}
+
+export const editOrder = async (orderId, userId, formData) => {
+  const res = await fetch(`/api/order/${orderId}/update`, {
+    method: 'PATCH',
+    body: JSON.stringify({ 
+      userId,
+      ...formData
+    }),
+  });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    toast.error(result.error || "Eroare");
+    return;
+  }
+
+  toast.success("Comanda modificata cu succes");
+}
+
 export const markNotificationAsRead = async (notificationId, userId) => {
   const res = await fetch(`/api/user/${userId}/notification`, {
     method: 'PATCH',

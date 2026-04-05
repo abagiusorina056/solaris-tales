@@ -23,7 +23,7 @@ export async function DELETE(req, { params }) {
     }
 
     const publicId = getCloudinaryPublicId(book.image)
-    await cloudinary.uploader.destroy(publicId)
+    await cloudinary.uploader.destroy("nextjs_uploads/" + publicId)
 
     await Book.findByIdAndDelete(id);
 

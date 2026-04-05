@@ -69,7 +69,7 @@ const LayoutTwo = ({
         <div className='flex items-baseline-last justify-between w-full px-10 mt-3'>
             <div className='flex flex-col'>
                 {bookDiscount > 0 && <span className='text-gray-300 line-through text-xl'>{bookPrice.toFixed(2)} RON</span>}
-                <span className={cn('text-3xl font-bold', book?.discount && 'text-[#fb6767]')}>
+                <span className={cn('text-3xl font-bold', bookDiscount > 0 && 'text-[#fb6767]')}>
                     {bookDiscount > 0 ? (((100 - bookDiscount) * bookPrice) / 100).toFixed(2) : bookPrice.toFixed(2)} RON
                 </span>
             </div>

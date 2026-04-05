@@ -33,6 +33,7 @@ import Link from 'next/link'
 import { useUser } from '@src/hooks/useUser'
 import { genres } from '@src/lib/genres'
 import { Separator } from '@src/components/ui/separator'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@src/components/ui/input-group'
 
 const PublishView = () => {
   const { data: user } = useUser()
@@ -127,17 +128,21 @@ const PublishView = () => {
                 disabled
                 className="bg-white py-6 !text-xl"
               />
-              <Input
-                placeholder="Telefon"
-                variant="default"
-                type="text"
-                id="phoneNumber"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                disabled={user.phoneNumber?.length}
-                onChange={handleChange}
-                className="bg-white py-6 !text-xl"
-              />
+              <InputGroup className="py-6 bg-transparent placeholder:select-none">
+                <InputGroupAddon align="inline-start" className={"border-r-1 pr-2 border-gray-400"}>
+                  <span className='text-xl'>+40</span>
+                </InputGroupAddon>
+                <InputGroupInput 
+                  placeholder="Telefon"
+                  type="number"
+                  name="phone"
+                  id="phone"
+                  value={formData.phoneNumber}
+                  disabled={user.phoneNumber?.length}
+                  onChange={handleChange}
+                  className="!text-xl"
+                />
+              </InputGroup>
             </div>
             <Separator className={"my-3"} />
             <div className="flex flex-col gap-2">

@@ -18,7 +18,7 @@ export async function PUT(req) {
       return NextResponse.json({ error: "Request not found" }, { status: 404 })
     }
 
-    await cloudinary.uploader.destroy(publicId);
+    await cloudinary.uploader.destroy("nextjs_uploads/" + publicId);
 
     global.io.emit("manuscriptDeleted");
 

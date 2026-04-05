@@ -141,6 +141,7 @@ const BagView = () => {
             <div className='flex items-center'>
                 <Input
                     type="text"
+                    disabled
                     className="bg-white rounded-none"
                 />
                 <Button

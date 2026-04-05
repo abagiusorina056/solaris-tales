@@ -15,8 +15,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@src/components/ui/select"
+import { IconLoader2 } from "@tabler/icons-react";
+import { updateOrder } from "@src/lib/admin";
+import { toast } from "sonner";
 
 export function ordersColumns(handleDelete) {
+  const handleStatusUpdate = async (e, orderId) => {
+    updateOrder(orderId, { status: e })
+      .then(() => {
+        toast.success("Status actualizat cu succes")
+        setIsStatusUpdating(false)
+      })
+  }
+
   return [
     {
       accessorKey: "slug",
@@ -85,8 +96,12 @@ export function ordersColumns(handleDelete) {
         const status = row.original.status;
 
         return (
-          <Select>
+          <Select
+            disabled={row.original.status === "canceled" || isStatusUpdating} 
+            onValueChange={(e) => handleStatusUpdate(e, row.original._id)}
+          >
             <SelectTrigger className="w-full max-w-48">
+              <IconLoader2 className="rotate" />
               <SelectValue placeholder={orderStatusMap[status]} />
             </SelectTrigger>
             <SelectContent>

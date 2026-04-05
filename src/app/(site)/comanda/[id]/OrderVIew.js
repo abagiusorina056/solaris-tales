@@ -12,14 +12,15 @@ import {
 import { Separator } from '@src/components/ui/separator'
 import { useOrders } from '@src/hooks/useOrders'
 import { useUser } from '@src/hooks/useUser'
-import { truncateText } from '@src/lib/utils'
+import { orderStatusMap, truncateText, validateOrderForm } from '@src/lib/utils'
 import { 
   IconCashBanknote, IconCheck, 
   IconClipboard, IconCreditCard, 
+  IconEdit, 
   IconLoader2 
 } from '@tabler/icons-react'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { 
   Dialog, 
   DialogClose, 
@@ -31,12 +32,85 @@ import {
    DialogTrigger 
 } from "@src/components/ui/dialog"
 import OrderSkeleton from '@src/components/skeletons/OrderSkeleton'
+import { Input } from '@src/components/ui/input'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@src/components/ui/input-group'
+import { cancelOrder, editOrder } from '@src/lib/user'
+import { socket } from '@src/lib/socketClient'
 
 const OrderView = ({ id }) => {
-  const { user } = useUser()
-  const [copied, setCopied] = React.useState(false)
-  const [isCancelling, setIsCancelling] = React.useState(false)
-  const { orders: order } = useOrders({}, `/api/order/${id}?user=${user._id}`)
+  const { data: user } = useUser()
+  const { orders: order, reload } = useOrders({}, `/api/order/${id}?user=${user._id}`)
+
+  const defaultValues = {
+    name: order?.name || "",
+    phone: order?.phone || "",
+    email: order?.email || "",
+    shippingAdress: order?.shippingAdress || "",
+  }
+
+  const [formData, setFormData] = useState(defaultValues)
+  const [copied, setCopied] = useState(false)
+  const [isCancelling, setIsCancelling] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [cancelDialog, setCancelDialog] = useState(false)
+  const [editDialog, setEditDialog] = useState(false)
+
+  const handleChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+  }
+
+  const handleCancel = async () => {
+    setIsCancelling(true)
+
+    await cancelOrder(order?._id, user?._id)
+
+    setCancelDialog(false)
+    setIsCancelling(false)
+  }
+
+  const handleEdit = async () => {
+    const isValid = validateOrderForm(formData)
+
+    if (!isValid || order?.status !== "processing") {
+      return
+    }
+
+    setIsEditing(true)
+
+    await editOrder(order?._id, user?._id, formData)
+
+    setEditDialog(false)
+    setIsEditing(false)
+  }
+
+  useEffect(() => {
+    socket.on("orderCanceled", () => {
+      setCancelDialog(false)
+      reload()
+    })
+
+    socket.on("orderUpdated", () => {
+      setEditDialog(false)
+      reload()
+    })
+
+    return () => {
+      socket.off("orderCanceled")
+      socket.off("orderUpdated")
+    }
+  }, [reload])
+
+  useEffect(() => {
+    setFormData({
+      name: order?.name || "",
+      phone: order?.phone || "",
+      email: order?.email || "",
+      shippingAdress: order?.shippingAdress || "",
+    })
+  }, [order])
   
   return !order._id ? (
     <>
@@ -164,6 +238,7 @@ const OrderView = ({ id }) => {
                       </div>
                     )
                   }
+                  <span className='mt-4'>Status: {orderStatusMap[order?.status] || "-"}</span>
                 </div>
               </CardContent>
               
@@ -171,7 +246,7 @@ const OrderView = ({ id }) => {
                 <>
                   <Separator />
                   <CardFooter>
-                    <Dialog>
+                    <Dialog open={cancelDialog} onOpenChange={setCancelDialog}>
                       <DialogTrigger asChild>
                         <Button 
                           variant="outline"
@@ -195,13 +270,91 @@ const OrderView = ({ id }) => {
                           </DialogClose>
                           <Button
                             disabled={isCancelling}
-                            // onClick={handleDelete}
+                            onClick={handleCancel}
                             className="cursor-pointer text-white bg-red-500 hover:bg-red-500 rounded-sm px-4 py-1 border-1"
                           >
                             {isCancelling ? (
                               <IconLoader2 className="rotate" />
                             ) : (
                               <span>Anuleaza Comanda</span>
+                            )}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                    <Dialog open={editDialog} onOpenChange={setEditDialog}>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="ghost"
+                          className="absolute"
+                        >
+                          <IconEdit />
+                          Editeaza
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Editeaza comanda {order.slug}</DialogTitle>
+                        </DialogHeader>
+                        <DialogDescription className={"flex flex-col gap-4"}>
+                          <Input
+                            placeholder="Nume"
+                            variant="default"
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="bg-white py-6 !text-xl"
+                          />
+                          <Input
+                            placeholder="Adresa de livrare"
+                            variant="default"
+                            type="text"
+                            id="shippingAdress"
+                            name="shippingAdress"
+                            value={formData.shippingAdress}
+                            onChange={handleChange}
+                            className="bg-white py-6 !text-xl"
+                          />
+                          <Input
+                            placeholder="Email"
+                            variant="default"
+                            type="text"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="bg-white py-6 !text-xl"
+                          />
+                          <InputGroup className="py-6 bg-transparent placeholder:select-none">
+                            <InputGroupAddon align="inline-start" className={"border-r-1 pr-2 border-gray-400"}>
+                              <span className='text-xl'>+40</span>
+                            </InputGroupAddon>
+                            <InputGroupInput 
+                              placeholder="Telefon"
+                              type="number"
+                              name="phone"
+                              id="phone"
+                              value={formData.phone}
+                              onChange={handleChange}
+                              className="!text-xl"
+                            />
+                          </InputGroup>
+                        </DialogDescription>
+                        <DialogFooter>
+                          <DialogClose className="cursor-pointer text-gray-600 rounded-sm px-4 py-1 border-1"> 
+                            Renunta
+                          </DialogClose>
+                          <Button
+                            disabled={isEditing}
+                            onClick={handleEdit}
+                            className="cursor-pointer rounded-sm px-4 py-1 border-1 bg-[var(--color-primary)] hover:bg-[var(--color-primary)]"
+                          >
+                            {isEditing ? (
+                              <IconLoader2 className="rotate" />
+                            ) : (
+                              <span>Timite</span>
                             )}
                           </Button>
                         </DialogFooter>
